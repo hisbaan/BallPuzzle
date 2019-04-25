@@ -35,21 +35,52 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
     BallPuzzle() {
         mainMenu();
-        canvas = new gameDrawing();
 
+//        canvas = new gameDrawing();
 
         east = new Timer(100, e -> {
             for (int x = 0; x < 20; x++) {
                 for (int y = 0; y < 20; y++) {
-                    if (ballPosition[x][y] ==) {
-                        ballPosition[x][y] == '0';
-                        ballPosition[x][y] == '1';
-
-
+                    if (ballPosition[x][y] == '1') {
+                        ballPosition[x][y] = '0';
+                        ballPosition[x + 1][y] = '1';
                     }
                 }
             }
-        })
+        });
+
+        west = new Timer(100, e -> {
+            for (int x = 0; x < 20; x++) {
+                for (int y = 0; y < 20; y++) {
+                    if (ballPosition[x][y] == '1') {
+                        ballPosition[x][y] = '0';
+                        ballPosition[x - 1][y] = '1';
+                    }
+                }
+            }
+        });
+
+        north = new Timer(100, e -> {
+            for (int x = 0; x < 20; x++) {
+                for (int y = 0; y < 20; y++) {
+                    if (ballPosition[x][y] == '1') {
+                        ballPosition[x][y] = '0';
+                        ballPosition[x][y - 1] = '1';
+                    }
+                }
+            }
+        });
+
+        south = new Timer(100, e -> {
+            for (int x = 0; x < 20; x++) {
+                for (int y = 0; y < 20; y++) {
+                    if (ballPosition[x][y] == '1') {
+                        ballPosition[x][y] = '0';
+                        ballPosition[x][y + 1] = '1';
+                    }
+                }
+            }
+        });
 
     }
 
@@ -149,16 +180,16 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-
+            north.start();
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-
+            south.start();
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-
+            west.start();
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-
+            east.start();
         }
     }
 
@@ -209,5 +240,12 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     @Override
     public void windowOpened(WindowEvent e) {
 
+    }
+
+    class gameDrawing extends Canvas {
+        @Override
+        public void paint(Graphics g) {
+
+        }
     }
 }
