@@ -31,12 +31,16 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     public char[][] level = new char[20][20];
     public char[][] ballPosition = new char[20][20];
 
-    JPanel gameGridPannel = new JPanel();
+    Canvas gameCanvas = new Canvas();
+
+    gameDrawing canvas = new gameDrawing();
 
     BallPuzzle() {
         mainMenu();
+//        canvas.validate();
+//        canvas.repaint();
 
-//        canvas = new gameDrawing();
+        //TODO fix paint method and how the objects are displayed on the gameFrame.
 
         east = new Timer(100, e -> {
             for (int x = 0; x < 20; x++) {
@@ -113,11 +117,13 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         gameFrame.add(gameBackButton, BorderLayout.SOUTH);
         if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
 
-        gameFrame.add(gameGridPannel, BorderLayout.CENTER);
-        gameGridPannel.setLayout(new GridLayout(20, 20));
-        gameGridPannel.setSize(800, 800);
+        gameFrame.add(gameCanvas, BorderLayout.CENTER);
+        gameCanvas.setSize(800, 800);
 
         readLevel();
+
+//        canvas.validate();
+//        canvas.repaint();
 
         for (int x = 0; x < 20; x++) {
             for (int y = 0; y < 20; y++) {
@@ -241,11 +247,11 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     public void windowOpened(WindowEvent e) {
 
     }
+}
 
-    class gameDrawing extends Canvas {
-        @Override
-        public void paint(Graphics g) {
-
-        }
+class gameDrawing extends Canvas {
+    @Override
+    public void paint(Graphics g) {
+        g.drawLine(200, 200, 600, 600);
     }
 }
