@@ -38,8 +38,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
     BallPuzzle() {
         mainMenu();
-//        canvas.validate();
-//        canvas.repaint();
+        canvas.validate();
+        canvas.repaint();
 
         //TODO fix paint method and how the objects are displayed on the gameFrame.
 
@@ -114,7 +114,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         gameFrame.add(gameBackButton, BorderLayout.SOUTH);
         if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
 
-        gameFrame.add(gameCanvas, BorderLayout.CENTER);
+        gameFrame.add(canvas, BorderLayout.CENTER);
         gameCanvas.setSize(800, 800);
 
         readLevel();
@@ -256,6 +256,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 }
 
 class gameDrawing extends Canvas {
+    gameDrawing() {
+        repaint();
+    }
+
     @Override
     public void paint(Graphics g) {
         g.drawLine(200, 200, 600, 600);
