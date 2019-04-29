@@ -26,6 +26,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     JButton gameBackButton = new JButton("Back to main menu");
 
     public String direction = "";
+    Timer movement;
 
     public int levelNumber = 1;
     public char[][] level = new char[20][20];
@@ -42,56 +43,52 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
         //TODO fix paint method and how the objects are displayed on the gameFrame.
 
-        east = new Timer(100, e -> {
-            for (int x = 0; x < 20; x++) {
-                for (int y = 0; y < 20; y++) {
-                    if (ballPosition[x][y] == '1') {
-                        ballPosition[x][y] = '0';
-                        ballPosition[x + 1][y] = '1';
+        movement = new Timer(100, e -> {
+            switch (direction) {
+                case "north":
+                    for (int x = 0; x < 20; x++) {
+                        for (int y = 0; y < 20; y++) {
+                            if (ballPosition[x][y] == '1') {
+                                ballPosition[x][y] = '0';
+                                ballPosition[x][y - 1] = '1';
+                            }
+                        }
                     }
-                }
+                    break;
+                case "south":
+                    for (int x = 0; x < 20; x++) {
+                        for (int y = 0; y < 20; y++) {
+                            if (ballPosition[x][y] == '1') {
+                                ballPosition[x][y] = '0';
+                                ballPosition[x][y + 1] = '1';
+                            }
+                        }
+                    }
+                    break;
+                case "east":
+                    for (int x = 0; x < 20; x++) {
+                        for (int y = 0; y < 20; y++) {
+                            if (ballPosition[x][y] == '1') {
+                                ballPosition[x][y] = '0';
+                                ballPosition[x + 1][y] = '1';
+                            }
+                        }
+                    }
+                    break;
+                case "west":
+                    for (int x = 0; x < 20; x++) {
+                        for (int y = 0; y < 20; y++) {
+                            if (ballPosition[x][y] == '1') {
+                                ballPosition[x][y] = '0';
+                                ballPosition[x - 1][y] = '1';
+                            }
+                        }
+                    }
+                    break;
             }
         });
-
-        west = new Timer(100, e -> {
-            for (int x = 0; x < 20; x++) {
-                for (int y = 0; y < 20; y++) {
-                    if (ballPosition[x][y] == '1') {
-                        ballPosition[x][y] = '0';
-                        ballPosition[x - 1][y] = '1';
-                    }
-                }
-            }
-        });
-
-        north = new Timer(100, e -> {
-            for (int x = 0; x < 20; x++) {
-                for (int y = 0; y < 20; y++) {
-                    if (ballPosition[x][y] == '1') {
-                        ballPosition[x][y] = '0';
-                        ballPosition[x][y - 1] = '1';
-                    }
-                }
-            }
-        });
-
-        south = new Timer(100, e -> {
-            for (int x = 0; x < 20; x++) {
-                for (int y = 0; y < 20; y++) {
-                    if (ballPosition[x][y] == '1') {
-                        ballPosition[x][y] = '0';
-                        ballPosition[x][y + 1] = '1';
-                    }
-                }
-            }
-        });
-
     }
 
-    Timer east;
-    Timer west;
-    Timer north;
-    Timer south;
 
     public void mainMenu() {
         if (DEBUG) System.out.println("mainMenu ran");
@@ -186,17 +183,26 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
-            north.start();
+            direction = "north";
+            System.out.println("Up arrow key pressed");
+            movement.start();
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            south.start();
-        }
-        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            west.start();
+            direction = "south";
+            System.out.println("Down arrow key pressed");
+            movement.start();
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            east.start();
+            direction = "east";
+            System.out.println("right arrow key pressed");
+            movement.start();
         }
+        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            direction = "west";
+            System.out.println("Left arrow key pressed");
+            movement.start();
+        }
+
     }
 
     @Override
