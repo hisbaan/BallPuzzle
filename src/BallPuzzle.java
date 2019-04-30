@@ -17,38 +17,42 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         new BallPuzzle();
     }
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = true; //Debug variable that shows or hides tracing statements.
 
+    //Variables for main menu.
     JFrame mainFrame = new JFrame("Main Menu");
     JButton startGame = new JButton("Start Game");
 
+    //Variables for game window.
     JFrame gameFrame = new JFrame("Ball Puzzle");
     JButton gameBackButton = new JButton("Back to main menu");
 
-    public String direction = "";
-    Timer movement;
+    public String direction = ""; //String that changes based on the direction selected by the user (via arrow keys).
+    Timer movement; //Initializing timer that is mentioned in constructor.
 
     public int levelNumber = 0;
-    public static char[][] level = new char[20][20];
-    public static char[][] ballPosition = new char[20][20];
+    public static char[][] level = new char[20][20]; //Char array that tracks the blocks on the level.
+    public static char[][] ballPosition = new char[20][20]; //Char array that tracks the position of the ball on the level.
 
-    Canvas gameCanvas = new Canvas();
 
-    gameDrawing canvas = new gameDrawing();
+    gameDrawing canvas = new gameDrawing(); //Instance of class to call paint method
 
     BallPuzzle() {
-        mainMenu();
-
+        //Calling the paint method to draw the canvas initially.
         canvas.validate();
         canvas.repaint();
-        //TODO fix paint method and how the objects are displayed on the gameFrame.
 
+        mainMenu();
+
+        //TODO fix east and south ball movement
+
+        //Timer that controls the movement of the ball on the board.
         movement = new Timer(500, e -> {
             canvas.validate();
             canvas.repaint();
 
             switch (direction) {
-                case "north":
+                case "north": //When the user presses the up arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
                             if (ballPosition[x][y] == '1') {
@@ -62,7 +66,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                         }
                     }
                     break;
-                case "south":
+                case "south": //When the user presses the down arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
                             if (ballPosition[x][y] == '1') {
@@ -76,7 +80,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                         }
                     }
                     break;
-                case "east":
+                case "east": //When the user presses the right arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
                             if (ballPosition[x][y] == '1') {
@@ -90,7 +94,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                         }
                     }
                     break;
-                case "west":
+                case "west": //When hte user presses the left arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
                             if (ballPosition[x][y] == '1') {
@@ -133,15 +137,17 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
         gameFrame.setFocusable(true);
         gameBackButton.setFocusable(false);
+        canvas.setFocusable(false);
 
         gameFrame.add(gameBackButton, BorderLayout.SOUTH);
         if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
 
+        canvas.setSize(800,800);
         gameFrame.add(canvas, BorderLayout.CENTER);
-        gameCanvas.setSize(800, 800);
 
         nextLevel();
 
+        //Sets the starting position of the ball to wherever 's' is in the array that stores the level information.
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
                 if (level[x][y] == 's') {
@@ -149,13 +155,12 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                 }
             }
         }
-        //use draw method to pain the scene of the level.
-        //paint the ball moving across the screes
 
         gameFrame.setVisible(true);
         mainFrame.setVisible(false);
     }
 
+    //Loads in the next level when the method is called.
     public void nextLevel() {
         levelNumber++;
         File levelFile = new File("./levels/level" + levelNumber + "raw.txt");
@@ -186,6 +191,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         }
     }
 
+    //ActionListener method
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startGame) {
@@ -197,6 +203,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         }
     }
 
+    //KeyListener methods
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -231,6 +238,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
     }
 
+    //WindowListener methods
     @Override
     public void windowActivated(WindowEvent e) {
 
@@ -276,6 +284,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     }
 }
 
+//Paint class
 class gameDrawing extends Canvas {
     gameDrawing() {
         repaint();
@@ -287,16 +296,21 @@ class gameDrawing extends Canvas {
 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
+                //Draws blue blocks wherever there is a solid block.
                 if (BallPuzzle.level[x][y] == 'x') {
                     g.setColor(Color.blue);
                     g.fillRect(x * 40, y * 40, 40, 40);
                 }
 
+                //TODO make the green box change colours from dark green to light green (look at game on website).
+
+                //Draws a green box where the end point of the level is.
                 if (BallPuzzle.level[x][y] == 'f') {
                     g.setColor(Color.green);
                     g.fillRect(x * 40, y * 40, 40, 40);
                 }
 
+                //Draws the ball whenever it moves.
                 if (BallPuzzle.ballPosition[x][y] == '1') {
                     g.setColor(Color.red);
                     g.fillOval(x * 40, y * 40, 40, 40);
