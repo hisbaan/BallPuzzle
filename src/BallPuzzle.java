@@ -28,9 +28,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     public String direction = "";
     Timer movement;
 
-    public int levelNumber = 1;
-    public char[][] level = new char[20][20];
-    public char[][] ballPosition = new char[20][20];
+    public int levelNumber = 0;
+    public static char[][] level = new char[20][20];
+    public static char[][] ballPosition = new char[20][20];
 
     Canvas gameCanvas = new Canvas();
 
@@ -38,19 +38,26 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
     BallPuzzle() {
         mainMenu();
+
         canvas.validate();
         canvas.repaint();
-
         //TODO fix paint method and how the objects are displayed on the gameFrame.
 
-        movement = new Timer(100, e -> {
+        movement = new Timer(1000, e -> {
+            canvas.validate();
+            canvas.repaint();
+
             switch (direction) {
                 case "north":
                     for (int x = 0; x < 20; x++) {
                         for (int y = 0; y < 20; y++) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
-                                ballPosition[x][y - 1] = '1';
+                                try {
+                                    ballPosition[x][y - 1] = '1';
+                                } catch (Exception e1) {
+                                    ballPosition[x][19] = '1';
+                                }
                             }
                         }
                     }
@@ -60,7 +67,11 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                         for (int y = 0; y < 20; y++) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
-                                ballPosition[x][y + 1] = '1';
+                                try {
+                                    ballPosition[x][y + 1] = '1';
+                                } catch (Exception e1) {
+                                    ballPosition[x][0] = '1';
+                                }
                             }
                         }
                     }
@@ -70,7 +81,11 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                         for (int y = 0; y < 20; y++) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
-                                ballPosition[x + 1][y] = '1';
+                                try {
+                                    ballPosition[x + 1][y] = '1';
+                                } catch (Exception e1) {
+                                    ballPosition[0][y] = '1';
+                                }
                             }
                         }
                     }
@@ -80,7 +95,11 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                         for (int y = 0; y < 20; y++) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
-                                ballPosition[x - 1][y] = '1';
+                                try {
+                                    ballPosition[x - 1][y] = '1';
+                                } catch (Exception e1) {
+                                    ballPosition[19][y] = '1';
+                                }
                             }
                         }
                     }
@@ -109,7 +128,11 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
         gameFrame.setSize(800, 800);
         if (gameFrame.getWindowListeners().length < 1) gameFrame.addWindowListener(this);
+        if (gameFrame.getKeyListeners().length < 1) gameFrame.addKeyListener(this);
         gameFrame.setLayout(new BorderLayout());
+
+        gameFrame.setFocusable(true);
+        gameBackButton.setFocusable(false);
 
         gameFrame.add(gameBackButton, BorderLayout.SOUTH);
         if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
@@ -117,15 +140,12 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         gameFrame.add(canvas, BorderLayout.CENTER);
         gameCanvas.setSize(800, 800);
 
-        readLevel();
-
-//        canvas.validate();
-//        canvas.repaint();
+        nextLevel();
 
         for (int x = 0; x < 20; x++) {
             for (int y = 0; y < 20; y++) {
                 if (level[x][y] == 's') {
-
+                    ballPosition[x][y] = '1';
                 }
             }
         }
@@ -136,22 +156,25 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         mainFrame.setVisible(false);
     }
 
-    public void readLevel() {
-        File levelFile = new File("./levels/level" + levelNumber + ".txt");
+    public void nextLevel() {
+        levelNumber++;
+        File levelFile = new File("./levels/level" + levelNumber + "raw.txt");
         String levelTemp;
 
         try {
             levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
 
+            int z = 0;
+
             for (int x = 0; x < 20; x++) {
                 for (int y = 0; y < 20; y++) {
-                    level[x][y] = levelTemp.charAt(y);
+                    level[x][y] = levelTemp.charAt(z);
+                    z++;
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         if (DEBUG) {
             for (int x = 0; x < 20; x++) {
@@ -162,7 +185,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
             }
         }
     }
-
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -182,6 +204,29 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+//        if (e.getKeyCode() == KeyEvent.VK_UP) {
+//            direction = "north";
+//            System.out.println("Up arrow key pressed");
+//            movement.start();
+//        }
+//        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+//            direction = "south";
+//            System.out.println("Down arrow key pressed");
+//            movement.start();
+//        }
+//        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+//            direction = "east";
+//            System.out.println("right arrow key pressed");
+//            movement.start();
+//        }
+//        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+//            direction = "west";
+//            System.out.println("Left arrow key pressed");
+//            movement.start();
+//        }
+
+        System.out.println("KeyListener triggered");
+
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             direction = "north";
             System.out.println("Up arrow key pressed");
@@ -202,7 +247,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
             System.out.println("Left arrow key pressed");
             movement.start();
         }
-
     }
 
     @Override
@@ -260,8 +304,27 @@ class gameDrawing extends Canvas {
         repaint();
     }
 
+//    BallPuzzle mainGame = new BallPuzzle();
+
     @Override
     public void paint(Graphics g) {
-        g.drawLine(200, 200, 600, 600);
+        for (int x = 0; x < 20; x++) {
+            for (int y = 0; y < 20; y++) {
+                if (BallPuzzle.level[y][x] == 'x') {
+                    g.setColor(Color.blue);
+                    g.fillRect(x * 40, y * 40, 40, 40);
+                }
+
+                if (BallPuzzle.level[y][x] == 'f') {
+                    g.setColor(Color.green);
+                    g.fillRect(x * 40, y * 40, 40, 40);
+                }
+
+                if (BallPuzzle.ballPosition[y][x] == '1') {
+                    g.setColor(Color.red);
+                    g.fillOval(x * 40, y * 40, 40, 40);
+                }
+            }
+        }
     }
 }
