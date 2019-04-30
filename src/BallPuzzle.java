@@ -30,7 +30,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     public String direction = ""; //String that changes based on the direction selected by the user (via arrow keys).
     Timer movement; //Initializing timer that is mentioned in constructor.
 
-    public int levelNumber = 0;
+    public int levelNumber = 1;
     public static char[][] level = new char[20][20]; //Char array that tracks the blocks on the level.
     public static char[][] ballPosition = new char[20][20]; //Char array that tracks the position of the ball on the level.
 
@@ -60,7 +60,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                                 try {
                                     ballPosition[x][y - 1] = '1';
                                 } catch (Exception e1) {
-                                    ballPosition[x][19] = '1';
+                                    ballPosition[x][19 ] = '1';
                                 }
                             }
                         }
@@ -142,7 +142,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         gameFrame.add(gameBackButton, BorderLayout.SOUTH);
         if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
 
-        canvas.setSize(800,800);
+        canvas.setSize(800, 800);
         gameFrame.add(canvas, BorderLayout.CENTER);
 
         nextLevel();
@@ -286,6 +286,12 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
 //Paint class
 class gameDrawing extends Canvas {
+
+    //Colours
+
+    Color darkGreen = new Color(0, 100, 0);
+    public boolean currentlyDarkGreen = false;
+
     gameDrawing() {
         repaint();
     }
@@ -306,8 +312,47 @@ class gameDrawing extends Canvas {
 
                 //Draws a green box where the end point of the level is.
                 if (BallPuzzle.level[x][y] == 'f') {
-                    g.setColor(Color.green);
+                    //TODO toggle colour so that the ending position shows an animation.
+                    //TODO use a method to reduce code duplication.
+
+
+                    if(currentlyDarkGreen) {
+                        g.setColor(Color.green);
+                        currentlyDarkGreen = !currentlyDarkGreen;
+                    } else {
+                        g.setColor(darkGreen);
+                        currentlyDarkGreen = !currentlyDarkGreen;
+                    }
                     g.fillRect(x * 40, y * 40, 40, 40);
+
+                    if(currentlyDarkGreen) {
+                        g.setColor(Color.green);
+                        currentlyDarkGreen = !currentlyDarkGreen;
+                    } else {
+                        g.setColor(darkGreen);
+                        currentlyDarkGreen = !currentlyDarkGreen;
+                    }
+                    g.fillRect((x * 40) + 5, (y * 40) + 5, 30, 30);
+
+                    if(currentlyDarkGreen) {
+                        g.setColor(Color.green);
+                        currentlyDarkGreen = !currentlyDarkGreen;
+                    } else {
+                        g.setColor(darkGreen);
+                        currentlyDarkGreen = !currentlyDarkGreen;
+                    }
+                    g.fillRect((x * 40) + 10, (y * 40) + 10, 20, 20);
+
+                    if(currentlyDarkGreen) {
+                        g.setColor(Color.green);
+                        currentlyDarkGreen = !currentlyDarkGreen;
+                    } else {
+                        g.setColor(darkGreen);
+                        currentlyDarkGreen = !currentlyDarkGreen;
+                    }
+                    g.fillRect((x * 40) + 15, (y * 40) + 15, 10, 10);
+//                    g.setColor(Color.green);
+//                    g.fillRect((x * 40) + 20, (y * 40) + 20, 5, 5);
                 }
 
                 //Draws the ball whenever it moves.
