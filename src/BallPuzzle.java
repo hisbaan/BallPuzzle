@@ -17,7 +17,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         new BallPuzzle();
     }
 
-    public final boolean DEBUG = true;
+    public static final boolean DEBUG = true;
 
     JFrame mainFrame = new JFrame("Main Menu");
     JButton startGame = new JButton("Start Game");
@@ -43,14 +43,14 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         canvas.repaint();
         //TODO fix paint method and how the objects are displayed on the gameFrame.
 
-        movement = new Timer(1000, e -> {
+        movement = new Timer(500, e -> {
             canvas.validate();
             canvas.repaint();
 
             switch (direction) {
                 case "north":
-                    for (int x = 0; x < 20; x++) {
-                        for (int y = 0; y < 20; y++) {
+                    for (int y = 0; y < 20; y++) {
+                        for (int x = 0; x < 20; x++) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
                                 try {
@@ -63,8 +63,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     }
                     break;
                 case "south":
-                    for (int x = 0; x < 20; x++) {
-                        for (int y = 0; y < 20; y++) {
+                    for (int y = 0; y < 20; y++) {
+                        for (int x = 0; x < 20; x++) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
                                 try {
@@ -77,8 +77,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     }
                     break;
                 case "east":
-                    for (int x = 0; x < 20; x++) {
-                        for (int y = 0; y < 20; y++) {
+                    for (int y = 0; y < 20; y++) {
+                        for (int x = 0; x < 20; x++) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
                                 try {
@@ -91,8 +91,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     }
                     break;
                 case "west":
-                    for (int x = 0; x < 20; x++) {
-                        for (int y = 0; y < 20; y++) {
+                    for (int y = 0; y < 20; y++) {
+                        for (int x = 0; x < 20; x++) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
                                 try {
@@ -126,7 +126,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     public void gameStart() {
         if (DEBUG) System.out.println("gameStart ran");
 
-        gameFrame.setSize(800, 800);
+        gameFrame.setSize(800, 850);
         if (gameFrame.getWindowListeners().length < 1) gameFrame.addWindowListener(this);
         if (gameFrame.getKeyListeners().length < 1) gameFrame.addKeyListener(this);
         gameFrame.setLayout(new BorderLayout());
@@ -142,8 +142,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
         nextLevel();
 
-        for (int x = 0; x < 20; x++) {
-            for (int y = 0; y < 20; y++) {
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < 20; x++) {
                 if (level[x][y] == 's') {
                     ballPosition[x][y] = '1';
                 }
@@ -166,8 +166,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
             int z = 0;
 
-            for (int x = 0; x < 20; x++) {
-                for (int y = 0; y < 20; y++) {
+            for (int y = 0; y < 20; y++) {
+                for (int x = 0; x < 20; x++) {
                     level[x][y] = levelTemp.charAt(z);
                     z++;
                 }
@@ -177,8 +177,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         }
 
         if (DEBUG) {
-            for (int x = 0; x < 20; x++) {
-                for (int y = 0; y < 20; y++) {
+            for (int y = 0; y < 20; y++) {
+                for (int x = 0; x < 20; x++) {
                     System.out.print(level[x][y] + " ");
                 }
                 System.out.println();
@@ -204,29 +204,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
-//        if (e.getKeyCode() == KeyEvent.VK_UP) {
-//            direction = "north";
-//            System.out.println("Up arrow key pressed");
-//            movement.start();
-//        }
-//        if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-//            direction = "south";
-//            System.out.println("Down arrow key pressed");
-//            movement.start();
-//        }
-//        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-//            direction = "east";
-//            System.out.println("right arrow key pressed");
-//            movement.start();
-//        }
-//        if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-//            direction = "west";
-//            System.out.println("Left arrow key pressed");
-//            movement.start();
-//        }
-
-        System.out.println("KeyListener triggered");
-
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             direction = "north";
             System.out.println("Up arrow key pressed");
@@ -304,23 +281,23 @@ class gameDrawing extends Canvas {
         repaint();
     }
 
-//    BallPuzzle mainGame = new BallPuzzle();
-
     @Override
     public void paint(Graphics g) {
-        for (int x = 0; x < 20; x++) {
-            for (int y = 0; y < 20; y++) {
-                if (BallPuzzle.level[y][x] == 'x') {
+        if (BallPuzzle.DEBUG) g.drawRect(0, 0, 800, 800);
+
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < 20; x++) {
+                if (BallPuzzle.level[x][y] == 'x') {
                     g.setColor(Color.blue);
                     g.fillRect(x * 40, y * 40, 40, 40);
                 }
 
-                if (BallPuzzle.level[y][x] == 'f') {
+                if (BallPuzzle.level[x][y] == 'f') {
                     g.setColor(Color.green);
                     g.fillRect(x * 40, y * 40, 40, 40);
                 }
 
-                if (BallPuzzle.ballPosition[y][x] == '1') {
+                if (BallPuzzle.ballPosition[x][y] == '1') {
                     g.setColor(Color.red);
                     g.fillOval(x * 40, y * 40, 40, 40);
                 }
