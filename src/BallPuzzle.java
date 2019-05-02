@@ -46,7 +46,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
         //TODO fix east and south ball movement
         //TODO don't let the ball go out of bound in the first place
-        //TODO make a method that checks the conditions of the (i.e. is the ball on the finish)
 
         //Timer that controls the movement of the ball on the board.
         movement = new Timer(500, e -> {
@@ -59,19 +58,15 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                 case "north": //When the user presses the up arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
-                            if (ballPosition[x][y] == '1') {
-                                ballPosition[x][y] = '0';
-                                if (y == 19) {
-                                    y = 0;
+                            int x2 = x;
+                            int y2 = y;
+                            if (ballPosition[x2][y2] == '1') {
+                                ballPosition[x2][y2] = '0';
+                                if (y2 == 0) {
+                                    y2 = 20;
                                 }
 
-//                                ballPosition[x][y - 1] = '1';
-                                try {
-                                    ballPosition[x][y - 1] = '1';
-                                } catch (Exception e1) {
-                                    System.out.println("north out of bounds");
-                                    ballPosition[x][19] = '1';
-                                }
+                                ballPosition[x2][y2 - 1] = '1';
                             }
                         }
                     }
@@ -79,14 +74,17 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                 case "south": //When the user presses the down arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
-                            if (ballPosition[x][y] == '1') {
-                                ballPosition[x][y] = '0';
-                                try {
-                                    ballPosition[x][y + 1] = '1';
-                                } catch (Exception e1) {
-                                    System.out.println("south out of bounds");
-                                    ballPosition[x][0] = '1';
+                            int x2 = x;
+                            int y2 = y;
+
+                            if (ballPosition[x2][y2] == '1') {
+                                ballPosition[x2][y2] = '0';
+
+                                if (y2 == 19) {
+                                    y2 = -1;
                                 }
+
+                                ballPosition[x2][y2 + 1] = '1';
                             }
                         }
                     }
@@ -94,20 +92,17 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                 case "east": //When the user presses the right arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
-                            if (ballPosition[x][y] == '1') {
-                                ballPosition[x][y] = '0';
+                            int x2 = x;
+                            int y2 = y;
 
-                                if (x == 19) {
-                                    x = 0;
+                            if (ballPosition[x2][y2] == '1') {
+                                ballPosition[x2][y2] = '0';
+
+                                if (x2 == 19) {
+                                    x2 = -1;
                                 }
 
-//                                ballPosition[x + 1][y] = '1';
-                                try {
-                                    ballPosition[x + 1][y] = '1';
-                                } catch (Exception e1) {
-                                    System.out.println("east out of bounds");
-                                    ballPosition[0][y] = '1';
-                                }
+                                ballPosition[x2 + 1][y2] = '1';
                             }
                         }
                     }
@@ -115,14 +110,17 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                 case "west": //When hte user presses the left arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
-                            if (ballPosition[x][y] == '1') {
-                                ballPosition[x][y] = '0';
-                                try {
-                                    ballPosition[x - 1][y] = '1';
-                                } catch (Exception e1) {
-                                    System.out.println("west out of bounds");
-                                    ballPosition[19][y] = '1';
+                            int x2 = x;
+                            int y2 = y;
+
+                            if (ballPosition[x2][y2] == '1') {
+                                ballPosition[x2][y2] = '0';
+
+                                if (x2 == 0) {
+                                    x2 = 20;
                                 }
+
+                                ballPosition[x2 - 1][y2] = '1';
                             }
                         }
                     }
@@ -278,8 +276,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
             direction = "east";
             System.out.println("right arrow key pressed");
             movement.start();
-
-            //TODO pressing on the right arrow key causes the program to freeze. This does not currently occur with any other key.
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             direction = "west";
