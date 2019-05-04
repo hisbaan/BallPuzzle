@@ -48,6 +48,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
         //Timer that controls the movement of the ball on the board.
         movement = new Timer(500, e -> {
+            canvas.validate();
+            canvas.repaint();
+
             checkCondition();
 
             canvas.validate();
@@ -77,8 +80,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     }
                     break;
                 case "south": //When the user presses the down arrow key.
-                    for (int y = 0; y < 20; y++) {
-                        for (int x = 0; x < 20; x++) {
+                    for (int y = 19; y > 0; y--) {
+                        for (int x = 19; x > 0; x--) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
 
@@ -97,8 +100,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     }
                     break;
                 case "east": //When the user presses the right arrow key.
-                    for (int y = 0; y < 20; y++) {
-                        for (int x = 0; x < 20; x++) {
+                    for (int y = 19; y > 0; y--) {
+                        for (int x = 19; x > 0; x--) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
 
@@ -129,7 +132,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                                     if (DEBUG) System.out.println("Ball hit " + direction + " wall");
                                 }
 
-                                /**/if (DEBUG) System.out.println("Ball moved" + direction);
+//                                if (DEBUG) System.out.println("Ball moved " + direction);
                                 canvas.validate();
                                 canvas.repaint();
                             }
@@ -259,7 +262,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                         direction = "";
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    System.out.println("solid block detection hit edge");
+                    if (DEBUG) System.out.println("solid block detection hit edge");
                 }
 
             }
@@ -288,22 +291,22 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             direction = "north";
-            System.out.println("Up arrow key pressed");
+            if (DEBUG) System.out.println("Up arrow key pressed");
             movement.start();
         }
         if (e.getKeyCode() == KeyEvent.VK_DOWN) {
             direction = "south";
-            System.out.println("Down arrow key pressed");
+            if (DEBUG) System.out.println("Down arrow key pressed");
             movement.start();
         }
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
             direction = "east";
-            System.out.println("right arrow key pressed");
+            if (DEBUG) System.out.println("right arrow key pressed");
             movement.start();
         }
         if (e.getKeyCode() == KeyEvent.VK_LEFT) {
             direction = "west";
-            System.out.println("Left arrow key pressed");
+            if (DEBUG) System.out.println("Left arrow key pressed");
             movement.start();
         }
     }
