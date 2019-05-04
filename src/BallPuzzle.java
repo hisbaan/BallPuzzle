@@ -30,10 +30,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     public String direction = ""; //String that changes based on the direction selected by the user (via arrow keys).
     Timer movement; //Initializing timer that is mentioned in constructor.
 
-    public int levelNumber = 1;
+    public int levelNumber = 0;
     public static char[][] level = new char[20][20]; //Char array that tracks the blocks on the level.
     public static char[][] ballPosition = new char[20][20]; //Char array that tracks the position of the ball on the level.
-
 
     gameDrawing canvas = new gameDrawing(); //Instance of class to call paint method
 
@@ -49,24 +48,30 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
         //Timer that controls the movement of the ball on the board.
         movement = new Timer(500, e -> {
+            checkCondition();
+
             canvas.validate();
             canvas.repaint();
 
-            checkCondition();
-
+            //TODO use direction that the ball is currently moving in and if the ball hits the edge of the screen, then set it to the other side of the screen.
             switch (direction) {
                 case "north": //When the user presses the up arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
-                            int x2 = x;
-                            int y2 = y;
-                            if (ballPosition[x2][y2] == '1') {
-                                ballPosition[x2][y2] = '0';
-                                if (y2 == 0) {
-                                    y2 = 20;
+                            if (ballPosition[x][y] == '1') {
+                                ballPosition[x][y] = '0';
+
+                                try {
+                                    ballPosition[x][y - 1] = '1';
+                                } catch (Exception ex) {
+                                    ballPosition[x][19] = '1';
+                                    if (DEBUG) System.out.println("Ball hit " + direction + " wall");
+
                                 }
 
-                                ballPosition[x2][y2 - 1] = '1';
+//                                if (DEBUG) System.out.println("Ball moved" + direction);
+                                canvas.validate();
+                                canvas.repaint();
                             }
                         }
                     }
@@ -74,17 +79,19 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                 case "south": //When the user presses the down arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
-                            int x2 = x;
-                            int y2 = y;
+                            if (ballPosition[x][y] == '1') {
+                                ballPosition[x][y] = '0';
 
-                            if (ballPosition[x2][y2] == '1') {
-                                ballPosition[x2][y2] = '0';
-
-                                if (y2 == 19) {
-                                    y2 = -1;
+                                try {
+                                    ballPosition[x][y + 1] = '1';
+                                } catch (Exception ex) {
+                                    ballPosition[x][0] = '1';
+                                    if (DEBUG) System.out.println("Ball hit " + direction + " wall");
                                 }
 
-                                ballPosition[x2][y2 + 1] = '1';
+//                                if (DEBUG) System.out.println("Ball moved" + direction);
+                                canvas.validate();
+                                canvas.repaint();
                             }
                         }
                     }
@@ -92,17 +99,19 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                 case "east": //When the user presses the right arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
-                            int x2 = x;
-                            int y2 = y;
+                            if (ballPosition[x][y] == '1') {
+                                ballPosition[x][y] = '0';
 
-                            if (ballPosition[x2][y2] == '1') {
-                                ballPosition[x2][y2] = '0';
-
-                                if (x2 == 19) {
-                                    x2 = -1;
+                                try {
+                                    ballPosition[x + 1][y] = '1';
+                                } catch (Exception ex) {
+                                    ballPosition[0][y] = '1';
+                                    if (DEBUG) System.out.println("Ball hit " + direction + " wall");
                                 }
 
-                                ballPosition[x2 + 1][y2] = '1';
+//                                if (DEBUG) System.out.println("Ball moved" + direction);
+                                canvas.validate();
+                                canvas.repaint();
                             }
                         }
                     }
@@ -110,17 +119,19 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                 case "west": //When hte user presses the left arrow key.
                     for (int y = 0; y < 20; y++) {
                         for (int x = 0; x < 20; x++) {
-                            int x2 = x;
-                            int y2 = y;
+                            if (ballPosition[x][y] == '1') {
+                                ballPosition[x][y] = '0';
 
-                            if (ballPosition[x2][y2] == '1') {
-                                ballPosition[x2][y2] = '0';
-
-                                if (x2 == 0) {
-                                    x2 = 20;
+                                try {
+                                    ballPosition[x - 1][y] = '1';
+                                } catch (Exception ex) {
+                                    ballPosition[19][y] = '1';
+                                    if (DEBUG) System.out.println("Ball hit " + direction + " wall");
                                 }
 
-                                ballPosition[x2 - 1][y2] = '1';
+                                /**/if (DEBUG) System.out.println("Ball moved" + direction);
+                                canvas.validate();
+                                canvas.repaint();
                             }
                         }
                     }
@@ -222,6 +233,18 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     nextLevel();
                 }
 
+                if (ballPosition[x][y] == '1' && level[x][y] == 't') {
+                    for (int y2 = 0; y2 < 20; y2++) {
+                        for (int x2 = 0; x2 < 20; x2++) {
+                            if (level[x2][y2] == 'T') {
+                                ballPosition[x2][y2] = '1';
+                            }
+                        }
+                    }
+
+                    ballPosition[x][y] = '0';
+                }
+
                 try {
                     if (ballPosition[x][y] == '1' && level[x][y - 1] == 'x' && direction.equals("north")) {
                         direction = "";
@@ -235,9 +258,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     if (ballPosition[x][y] == '1' && level[x - 1][y] == 'x' && direction.equals("west")) {
                         direction = "";
                     }
-                } catch (Exception e) {
-                    System.out.println("detection hit edge");
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println("solid block detection hit edge");
                 }
+
             }
         }
     }
