@@ -186,9 +186,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         String levelTemp;
 
         try {
-//            levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
-
-            levelTemp = Files.readString(levelFile.toPath());
+            levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
             int z = 0;
 
             for (int y = 0; y < 20; y++) {
