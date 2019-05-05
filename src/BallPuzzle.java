@@ -80,8 +80,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     }
                     break;
                 case "south": //When the user presses the down arrow key.
-                    for (int y = 19; y > 0; y--) {
-                        for (int x = 19; x > 0; x--) {
+                    for (int y = 19; y > -1; y--) {
+                        for (int x = 19; x > -1; x--) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
 
@@ -100,8 +100,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     }
                     break;
                 case "east": //When the user presses the right arrow key.
-                    for (int y = 19; y > 0; y--) {
-                        for (int x = 19; x > 0; x--) {
+                    for (int y = 19; y > -1; y--) {
+                        for (int x = 19; x > -1; x--) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
 
@@ -248,23 +248,31 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
                     ballPosition[x][y] = '0';
                 }
 
+
                 try {
                     if (ballPosition[x][y] == '1' && level[x][y - 1] == 'x' && direction.equals("north")) {
                         direction = "";
                     }
+                } catch (Exception e) {
+                }
+                try {
                     if (ballPosition[x][y] == '1' && level[x][y + 1] == 'x' && direction.equals("south")) {
                         direction = "";
                     }
+                } catch (Exception e) {
+                }
+                try {
                     if (ballPosition[x][y] == '1' && level[x + 1][y] == 'x' && direction.equals("east")) {
                         direction = "";
                     }
+                } catch (Exception e) {
+                }
+                try {
                     if (ballPosition[x][y] == '1' && level[x - 1][y] == 'x' && direction.equals("west")) {
                         direction = "";
                     }
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    if (DEBUG) System.out.println("solid block detection hit edge");
+                } catch (Exception e) {
                 }
-
             }
         }
     }
