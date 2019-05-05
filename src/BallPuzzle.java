@@ -402,6 +402,8 @@ class gameDrawing extends Canvas {
 
     Color darkGreen = new Color(0, 100, 0);
     Color darkBlue = new Color(0, 90, 150);
+    Color purple = new Color(161, 0, 247);
+
     public boolean currentlyDarkGreen = false;
 
     gameDrawing() {
@@ -480,36 +482,41 @@ class gameDrawing extends Canvas {
 
                 //TODO animate directional blocks
                 if (BallPuzzle.level[x][y] == '^') {
+                    g.setColor(purple);
+                    g.fillRect(x * 40, y * 40, 40, 40);
                     g.setColor(Color.magenta);
                     Polygon upTriangle = new Polygon();
                     upTriangle.addPoint((x * 40), (y * 40) + 40);
                     upTriangle.addPoint((x * 40) + 20, (y * 40));
                     upTriangle.addPoint((x * 40) + 40, (y * 40) + 40);
-                    g.drawPolygon(upTriangle);
+                    g.fillPolygon(upTriangle);
                 }
                 if (BallPuzzle.level[x][y] == 'v') {
-                    g.setColor(Color.magenta);
+                    g.setColor(purple);
+                    g.fillRect(x * 40, y * 40, 40, 40);g.setColor(Color.magenta);
                     Polygon upTriangle = new Polygon();
                     upTriangle.addPoint((x * 40), (y * 40));
                     upTriangle.addPoint((x * 40) + 20, (y * 40) + 40);
                     upTriangle.addPoint((x * 40) + 40, (y * 40));
-                    g.drawPolygon(upTriangle);
+                    g.fillPolygon(upTriangle);
                 }
                 if (BallPuzzle.level[x][y] == '>') {
-                    g.setColor(Color.magenta);
+                    g.setColor(purple);
+                    g.fillRect(x * 40, y * 40, 40, 40);g.setColor(Color.magenta);
                     Polygon upTriangle = new Polygon();
                     upTriangle.addPoint((x * 40), (y * 40));
                     upTriangle.addPoint((x * 40) + 40, (y * 40) + 20);
                     upTriangle.addPoint((x * 40), (y * 40) + 40);
-                    g.drawPolygon(upTriangle);
+                    g.fillPolygon(upTriangle);
                 }
                 if (BallPuzzle.level[x][y] == '<') {
-                    g.setColor(Color.magenta);
+                    g.setColor(purple);
+                    g.fillRect(x * 40, y * 40, 40, 40);g.setColor(Color.magenta);
                     Polygon upTriangle = new Polygon();
                     upTriangle.addPoint((x * 40) + 40, (y * 40));
                     upTriangle.addPoint((x * 40), (y * 40) + 20);
                     upTriangle.addPoint((x * 40) + 40, (y * 40) + 40);
-                    g.drawPolygon(upTriangle);
+                    g.fillPolygon(upTriangle);
                 }
 
                 //Draws the ball whenever it moves.
