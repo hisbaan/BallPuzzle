@@ -191,6 +191,19 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         gameFrame.setVisible(false);
     }
 
+    public void reset() {
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < 20; x++) {
+                level[x][y] = '0';
+            }
+        }
+
+        canvas.validate();
+        canvas.repaint();
+
+        if (DEBUG) System.out.println("Level Editor Reset");
+    }
+
     public void gameStart() {
         if (DEBUG) System.out.println("gameStart ran");
 
@@ -355,7 +368,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         }
 
         if (e.getSource() == levelEditorResetButton) {
-            //TODO add the reset method that sets everything to zero
+            reset();
         }
 
         if (e.getSource() == levelEditorSaveButton) {
@@ -561,7 +574,7 @@ class gameDrawing extends Canvas {
                     g.setColor(Color.white);
                     g.fillRect((x * 40) + 5, (y * 40) + 5, 30, 30);
                 }
-                
+
                 if (BallPuzzle.level[x][y] == '^') {
                     g.setColor(purple);
                     g.fillRect(x * 40, y * 40, 40, 40);
