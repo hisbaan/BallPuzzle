@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import javax.swing.*;
 
-public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
+public class BallPuzzle implements ActionListener, WindowListener, KeyListener, MouseListener {
     public static void main(String[] args) {
         new BallPuzzle();
     }
@@ -21,7 +21,16 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
     //Variables for main menu.
     JFrame mainFrame = new JFrame("Main Menu");
+    JPanel mainPanel = new JPanel();
     JButton startGame = new JButton("Start Game");
+    JButton levelEditorButton = new JButton("Level Editor");
+
+    //Variables for level editor
+    JFrame levelEditorFrame = new JFrame("Level Editor");
+    JPanel levelEditorPanel = new JPanel();
+    JButton levelEditorBackButton = new JButton("Back");
+    JButton levelEditorSaveButton = new JButton("Save");
+    JButton levelEditorResetButton = new JButton("Reset");
 
     //Variables for game window.
     JFrame gameFrame = new JFrame("Ball Puzzle");
@@ -35,6 +44,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
     public static char[][] ballPosition = new char[20][20]; //Char array that tracks the position of the ball on the level.
 
     gameDrawing canvas = new gameDrawing(); //Instance of class to call paint method
+    levelEditorDrawing levelEditorDrawing = new levelEditorDrawing();
 
     BallPuzzle() {
         //Calling the paint method to draw the canvas initially.
@@ -135,7 +145,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         });
     }
 
-
     public void mainMenu() {
         if (DEBUG) System.out.println("mainMenu ran");
 
@@ -143,10 +152,42 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
         if (mainFrame.getWindowListeners().length < 1) mainFrame.addWindowListener(this);
         mainFrame.setLayout(new BorderLayout());
 
-        mainFrame.add(startGame, BorderLayout.SOUTH);
+        mainFrame.add(mainPanel, BorderLayout.SOUTH);
+
+        mainPanel.setLayout(new GridLayout(1, 3));
+        mainPanel.add(startGame);
         if (startGame.getActionListeners().length < 1) startGame.addActionListener(this);
 
+        mainPanel.add(levelEditorButton);
+        if (levelEditorButton.getActionListeners().length < 1) levelEditorButton.addActionListener(this);
+
         mainFrame.setVisible(true);
+        gameFrame.setVisible(false);
+        levelEditorFrame.setVisible(false);
+    }
+
+    public void levelEditor() {
+        levelEditorFrame.setSize(900, 850);
+        levelEditorFrame.setLayout(new BorderLayout());
+
+        levelEditorFrame.add(canvas, BorderLayout.CENTER);
+        levelEditorFrame.add(levelEditorDrawing, BorderLayout.EAST);
+
+        canvas.setSize(800, 800);
+        levelEditorDrawing.setSize(100, 800);
+
+        levelEditorFrame.add(levelEditorPanel, BorderLayout.SOUTH);
+
+        levelEditorPanel.setLayout(new GridLayout(1, 3));
+        levelEditorPanel.add(levelEditorBackButton);
+        if (levelEditorBackButton.getActionListeners().length < 1) levelEditorBackButton.addActionListener(this);
+        levelEditorPanel.add(levelEditorSaveButton);
+        if (levelEditorSaveButton.getActionListeners().length < 1) levelEditorSaveButton.addActionListener(this);
+        levelEditorPanel.add(levelEditorResetButton);
+        if (levelEditorResetButton.getActionListeners().length < 1) levelEditorResetButton.addActionListener(this);
+
+        levelEditorFrame.setVisible(true);
+        mainFrame.setVisible(false);
         gameFrame.setVisible(false);
     }
 
@@ -174,6 +215,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
         gameFrame.setVisible(true);
         mainFrame.setVisible(false);
+        levelEditorFrame.setVisible(false);
     }
 
     //Loads in the next level when the method is called.
@@ -305,7 +347,22 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
             gameStart();
         }
 
-        if (e.getSource() == gameBackButton) {
+        if (e.getSource() == levelEditorButton) {
+            //TODO JOption Pane where you can select if you want to create a new level or work on a level that is not done yet.
+            //TODO if you select a new file, then name it.
+            //TODO if you want to edit a previous file, enter it's name. or do a dropdown menu with all the current files.
+            levelEditor();
+        }
+
+        if (e.getSource() == levelEditorResetButton) {
+            //TODO add the reset method that sets everything to zero
+        }
+
+        if (e.getSource() == levelEditorSaveButton) {
+            //TODO add a save method that checks whether the level includes a start and end tile and other requirements
+        }
+
+        if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton) {
             mainMenu();
         }
     }
@@ -347,6 +404,31 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
 
     }
 
+    //MouseListener methods
+    @Override
+    public void mouseClicked(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+
     //WindowListener methods
     @Override
     public void windowActivated(WindowEvent e) {
@@ -364,8 +446,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener {
             JOptionPane.showMessageDialog(mainFrame, "Thank you for playing!\nGood Bye!");
         if (e.getSource() == gameFrame)
             JOptionPane.showMessageDialog(gameFrame, "Thank you for playing!\nGood Bye!");
-//        if (e.getSource() == helpFrame)
-//            JOptionPane.showMessageDialog(helpFrame, "Thank you for playing!\nGood Bye!");
+        if (e.getSource() == levelEditorFrame)
+            JOptionPane.showMessageDialog(levelEditorFrame, "Thank you for playing!\nGood Bye!");
 //        if (e.getSource() == highScoreFrame)
 //            JOptionPane.showMessageDialog(highScoreFrame, "Thank you for playing!\nGood Bye!");
 
@@ -398,11 +480,14 @@ class gameDrawing extends Canvas {
 
     //Colours
 
-    Color darkGreen = new Color(0, 100, 0);
-    Color darkBlue = new Color(0, 90, 150);
-    Color purple = new Color(161, 0, 247);
+    Color darkGreen = new Color(0x006400);
+    Color darkBlue = new Color(0x005994);
+    Color darkOrange = new Color(0xCD3E0E);
+    Color purple = new Color(0xA100F7);
 
     public boolean currentlyDarkGreen = false;
+
+    private int counter = 0;
 
     gameDrawing() {
         repaint();
@@ -410,13 +495,14 @@ class gameDrawing extends Canvas {
 
     @Override
     public void paint(Graphics g) {
-        if (BallPuzzle.DEBUG) g.drawRect(0, 0, 800, 800);
+        counter++;
 
-        g.setColor(Color.CYAN);
+        g.setColor(Color.cyan);
         g.fillRect(0, 0, 800, 800);
 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
+
 
                 g.setColor(Color.white);
                 g.drawLine(x * 40, 0, x * 40, 800);
@@ -427,58 +513,55 @@ class gameDrawing extends Canvas {
                     g.fillRect(x * 40, y * 40, 40, 40);
                 }
 
-                //TODO make the green box change colours from dark green to light green (look at game on website).
-
                 //Draws a green box where the end point of the level is.
                 if (BallPuzzle.level[x][y] == 'f') {
-                    //TODO toggle colour so that the ending position shows an animation.
-
-                    if (currentlyDarkGreen) {
+                    if (counter % 2 == 0) {
                         g.setColor(Color.green);
-                        currentlyDarkGreen = !currentlyDarkGreen;
                     } else {
                         g.setColor(darkGreen);
-                        currentlyDarkGreen = !currentlyDarkGreen;
                     }
+
                     g.fillRect(x * 40, y * 40, 40, 40);
 
-                    if (currentlyDarkGreen) {
-                        g.setColor(Color.green);
-                        currentlyDarkGreen = !currentlyDarkGreen;
-                    } else {
+                    if (counter % 2 == 0) {
                         g.setColor(darkGreen);
-                        currentlyDarkGreen = !currentlyDarkGreen;
+                    } else {
+                        g.setColor(Color.green);
                     }
+
                     g.fillRect((x * 40) + 5, (y * 40) + 5, 30, 30);
 
-                    if (currentlyDarkGreen) {
+                    if (counter % 2 == 0) {
                         g.setColor(Color.green);
-                        currentlyDarkGreen = !currentlyDarkGreen;
                     } else {
                         g.setColor(darkGreen);
-                        currentlyDarkGreen = !currentlyDarkGreen;
                     }
+
                     g.fillRect((x * 40) + 10, (y * 40) + 10, 20, 20);
 
-                    if (currentlyDarkGreen) {
-                        g.setColor(Color.green);
-                        currentlyDarkGreen = !currentlyDarkGreen;
-                    } else {
+                    if (counter % 2 == 0) {
                         g.setColor(darkGreen);
-                        currentlyDarkGreen = !currentlyDarkGreen;
+                    } else {
+                        g.setColor(Color.green);
                     }
+
                     g.fillRect((x * 40) + 15, (y * 40) + 15, 10, 10);
-//                    g.setColor(Color.green);
-//                    g.fillRect((x * 40) + 20, (y * 40) + 20, 5, 5);
                 }
 
                 if (BallPuzzle.level[x][y] == 't' || BallPuzzle.level[x][y] == 'T') {
-                    //TODO make teleport block animated
-                    g.setColor(Color.orange);
+                    g.setColor(darkOrange);
                     g.fillRect(x * 40, y * 40, 40, 40);
+                    g.setColor(Color.white);
+                    g.fillRect((x * 40) + 5, (y * 40) + 5, 30, 30);
                 }
 
-                //TODO animate directional blocks
+                if (BallPuzzle.level[x][y] == 'T') {
+                    g.setColor(Color.orange);
+                    g.fillRect(x * 40, y * 40, 40, 40);
+                    g.setColor(Color.white);
+                    g.fillRect((x * 40) + 5, (y * 40) + 5, 30, 30);
+                }
+                
                 if (BallPuzzle.level[x][y] == '^') {
                     g.setColor(purple);
                     g.fillRect(x * 40, y * 40, 40, 40);
@@ -491,30 +574,33 @@ class gameDrawing extends Canvas {
                 }
                 if (BallPuzzle.level[x][y] == 'v') {
                     g.setColor(purple);
-                    g.fillRect(x * 40, y * 40, 40, 40);g.setColor(Color.magenta);
-                    Polygon upTriangle = new Polygon();
-                    upTriangle.addPoint((x * 40), (y * 40));
-                    upTriangle.addPoint((x * 40) + 20, (y * 40) + 40);
-                    upTriangle.addPoint((x * 40) + 40, (y * 40));
-                    g.fillPolygon(upTriangle);
+                    g.fillRect(x * 40, y * 40, 40, 40);
+                    g.setColor(Color.magenta);
+                    Polygon downTriangle = new Polygon();
+                    downTriangle.addPoint((x * 40), (y * 40));
+                    downTriangle.addPoint((x * 40) + 20, (y * 40) + 40);
+                    downTriangle.addPoint((x * 40) + 40, (y * 40));
+                    g.fillPolygon(downTriangle);
                 }
                 if (BallPuzzle.level[x][y] == '>') {
                     g.setColor(purple);
-                    g.fillRect(x * 40, y * 40, 40, 40);g.setColor(Color.magenta);
-                    Polygon upTriangle = new Polygon();
-                    upTriangle.addPoint((x * 40), (y * 40));
-                    upTriangle.addPoint((x * 40) + 40, (y * 40) + 20);
-                    upTriangle.addPoint((x * 40), (y * 40) + 40);
-                    g.fillPolygon(upTriangle);
+                    g.fillRect(x * 40, y * 40, 40, 40);
+                    g.setColor(Color.magenta);
+                    Polygon rightTriangle = new Polygon();
+                    rightTriangle.addPoint((x * 40), (y * 40));
+                    rightTriangle.addPoint((x * 40) + 40, (y * 40) + 20);
+                    rightTriangle.addPoint((x * 40), (y * 40) + 40);
+                    g.fillPolygon(rightTriangle);
                 }
                 if (BallPuzzle.level[x][y] == '<') {
                     g.setColor(purple);
-                    g.fillRect(x * 40, y * 40, 40, 40);g.setColor(Color.magenta);
-                    Polygon upTriangle = new Polygon();
-                    upTriangle.addPoint((x * 40) + 40, (y * 40));
-                    upTriangle.addPoint((x * 40), (y * 40) + 20);
-                    upTriangle.addPoint((x * 40) + 40, (y * 40) + 40);
-                    g.fillPolygon(upTriangle);
+                    g.fillRect(x * 40, y * 40, 40, 40);
+                    g.setColor(Color.magenta);
+                    Polygon leftTriangle = new Polygon();
+                    leftTriangle.addPoint((x * 40) + 40, (y * 40));
+                    leftTriangle.addPoint((x * 40), (y * 40) + 20);
+                    leftTriangle.addPoint((x * 40) + 40, (y * 40) + 40);
+                    g.fillPolygon(leftTriangle);
                 }
 
                 //Draws the ball whenever it moves.
@@ -524,5 +610,93 @@ class gameDrawing extends Canvas {
                 }
             }
         }
+    }
+}
+
+class levelEditorDrawing extends Canvas {
+
+    Color darkGreen = new Color(0x006400);
+    Color darkBlue = new Color(0x005994);
+    Color darkOrange = new Color(0xCD3E0E);
+    Color purple = new Color(0xA100F7);
+
+    levelEditorDrawing() {
+        repaint();
+    }
+
+    public void paint(Graphics g) {
+        //0 block
+        g.setColor(Color.cyan);
+        g.fillRect(30, 20, 40, 40);
+
+        //x block
+        g.setColor(darkBlue);
+        g.fillRect(30, 80, 40, 40);
+
+        //s block
+        g.setColor(Color.red);
+        g.fillRect(30, 140, 40, 40);
+
+        //f block
+        g.setColor(darkGreen);
+        g.fillRect(30, 200, 40, 40);
+        g.setColor(Color.green);
+        g.fillRect(35, 205, 30, 30);
+        g.setColor(darkGreen);
+        g.fillRect(40, 210, 20, 20);
+        g.setColor(Color.green);
+        g.fillRect(45, 215, 10, 10);
+
+        //t block
+        g.setColor(darkOrange);
+        g.fillRect(30, 260, 40, 40);
+        g.setColor(Color.white);
+        g.fillRect(35, 265, 30, 30);
+
+        //T block
+        g.setColor(Color.orange);
+        g.fillRect(30, 320, 40, 40);
+        g.setColor(Color.white);
+        g.fillRect(35, 325, 30, 30);
+
+        //^ block
+        g.setColor(purple);
+        g.fillRect(30, 380, 40, 40);
+        g.setColor(Color.magenta);
+        Polygon upTriangle = new Polygon();
+        upTriangle.addPoint(30, 420);
+        upTriangle.addPoint(50, 380);
+        upTriangle.addPoint(70, 420);
+        g.fillPolygon(upTriangle);
+
+        //v block
+        g.setColor(purple);
+        g.fillRect(30, 440, 40, 40);
+        g.setColor(Color.magenta);
+        Polygon downTriangle = new Polygon();
+        downTriangle.addPoint(30, 440);
+        downTriangle.addPoint(50, 480);
+        downTriangle.addPoint(70, 440);
+        g.fillPolygon(downTriangle);
+
+        //> block
+        g.setColor(purple);
+        g.fillRect(30, 500, 40, 40);
+        g.setColor(Color.magenta);
+        Polygon rightTriangle = new Polygon();
+        rightTriangle.addPoint(30, 500);
+        rightTriangle.addPoint(70, 520);
+        rightTriangle.addPoint(30, 540);
+        g.fillPolygon(rightTriangle);
+
+        //< block
+        g.setColor(purple);
+        g.fillRect(30, 560, 40, 40);
+        g.setColor(Color.magenta);
+        Polygon leftTriangle = new Polygon();
+        leftTriangle.addPoint(70, 560);
+        leftTriangle.addPoint(30, 580);
+        leftTriangle.addPoint(70, 600);
+        g.fillPolygon(leftTriangle);
     }
 }
