@@ -32,6 +32,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     JButton levelEditorSaveButton = new JButton("Save");
     JButton levelEditorResetButton = new JButton("Reset");
 
+    public String newLevel = "";
+    public String existingLevelName = "";
+    public boolean editingNewLevel = true;
+
     //Variables for game window.
     JFrame gameFrame = new JFrame("Ball Puzzle");
     JButton gameBackButton = new JButton("Back to main menu");
@@ -364,6 +368,38 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             //TODO JOption Pane where you can select if you want to create a new level or work on a level that is not done yet.
             //TODO if you select a new file, then name it.
             //TODO if you want to edit a previous file, enter it's name. or do a dropdown menu with all the current files.
+            String[] options = new String[]{"New Level", "Pre-existing Level"};
+            int response = JOptionPane.showOptionDialog(mainFrame, "Message", "Title",
+                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                    null, options, options[0]);
+
+            if (response == 0) {
+                newLevel = JOptionPane.showInputDialog(mainFrame, "What would you like to call your level?");
+                editingNewLevel = true;
+
+                reset();
+            } else if (response == 1) {
+                existingLevelName = JOptionPane.showInputDialog(mainFrame, "What is the name of the level you would like to edit?");
+                editingNewLevel = false;
+
+                File levelFile = new File("./customLevels/" + existingLevelName + ".txt");
+                String levelTemp;
+
+                try {
+                    levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
+                    int z = 0;
+
+                    for (int y = 0; y < 20; y++) {
+                        for (int x = 0; x < 20; x++) {
+                            level[x][y] = levelTemp.charAt(z);
+                            z++;
+                        }
+                    }
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+
             levelEditor();
         }
 
@@ -373,6 +409,30 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         if (e.getSource() == levelEditorSaveButton) {
             //TODO add a save method that checks whether the level includes a start and end tile and other requirements
+            File file;
+
+            if(editingNewLevel) {
+                file = new File("./customLevels/" + newLevel + ".txt");
+            } else {
+                file = new File("./customLevels/" + existingLevelName + ".txt");
+            }
+
+            String rawLevelData = "";
+
+            for (int y = 0; y < 20; y++) {
+                for (int x = 0; x < 20; x++) {
+                    rawLevelData += level[x][y];
+                }
+            }
+
+            try {
+                Files.write(file.toPath(), rawLevelData.getBytes(StandardCharsets.UTF_8));
+
+                if (DEBUG) System.out.println("Level Saved");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                if (DEBUG) System.out.println("Level Not Saved");
+            }
         }
 
         if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton) {
@@ -425,6 +485,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     @Override
     public void mousePressed(MouseEvent e) {
+
     }
 
     @Override
@@ -648,7 +709,7 @@ class levelEditorDrawing extends Canvas {
 
         //s block
         g.setColor(Color.red);
-        g.fillRect(30, 140, 40, 40);
+        g.fillOval(30, 140, 40, 40);
 
         //f block
         g.setColor(darkGreen);
