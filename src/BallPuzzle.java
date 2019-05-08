@@ -35,6 +35,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     public String newLevel = "";
     public String existingLevelName = "";
     public boolean editingNewLevel = true;
+    public static boolean drawStart = false;
+    public char brush = '0';
 
     //Variables for game window.
     JFrame gameFrame = new JFrame("Ball Puzzle");
@@ -173,21 +175,21 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     public void levelEditor() {
         if (DEBUG) System.out.println("levelEditor ran");
         levelEditorFrame.setSize(900, 850);
+        levelEditorFrame.setResizable(false);
         levelEditorFrame.setLayout(new BorderLayout());
 
-        canvas.setFocusable(false);
-        levelEditorDrawing.setFocusable(false);
+        canvas.setFocusable(true);
+        levelEditorDrawing.setFocusable(true);
         levelEditorPanel.setFocusable(false);
         levelEditorSaveButton.setFocusable(false);
         levelEditorResetButton.setFocusable(false);
         levelEditorBackButton.setFocusable(false);
-
-        levelEditorFrame.setFocusable(true);
+        levelEditorFrame.setFocusable(false);
 
         levelEditorFrame.add(canvas, BorderLayout.CENTER);
         levelEditorFrame.add(levelEditorDrawing, BorderLayout.EAST);
-//        if (levelEditorFrame.getMouseListeners().length < 1)
-            levelEditorFrame.addMouseListener(this);
+        if (canvas.getMouseListeners().length < 1) canvas.addMouseListener(this);
+        if (levelEditorDrawing.getMouseListeners().length < 1) levelEditorDrawing.addMouseListener(this);
 
         canvas.setSize(800, 800);
         levelEditorDrawing.setSize(100, 800);
@@ -221,6 +223,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     }
 
     public void gameStart() {
+        drawStart = false;
         if (DEBUG) System.out.println("gameStart ran");
 
         gameFrame.setSize(800, 850);
@@ -497,10 +500,34 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println("Mouse Clicked");
-//        if (e.getSource() == levelEditorFrame) {
-        System.out.println("X: " + e.getX() + " | Y: " + e.getY());
-//        }
+        if (e.getSource() == levelEditorDrawing) {
+            System.out.println("LE X: " + e.getX() + " | Y: " + e.getY());
+
+            if (e.getX() >= 30 && e.getX() <= 70) {
+                if (e.getY() >= 20 && e.getY() <= 60) {brush = '0';}
+                if (e.getY() >= 80 && e.getY() <= 120) {brush = 'x';}
+                if (e.getY() >= 140 && e.getY() <= 180) {brush = 's';}
+                if (e.getY() >= 200 && e.getY() <= 240) {brush = 'f';}
+                if (e.getY() >= 260 && e.getY() <= 300) {brush = 't';}
+                if (e.getY() >= 320 && e.getY() <= 360) {brush = 'T';}
+                if (e.getY() >= 380 && e.getY() <= 420) {brush = '^';}
+                if (e.getY() >= 440 && e.getY() <= 480) {brush = 'v';}
+                if (e.getY() >= 500 && e.getY() <= 540) {brush = '>';}
+                if (e.getY() >= 560 && e.getY() <= 600) {brush = '<';}
+            }
+
+            if (DEBUG) System.out.println("Brush: " + brush);
+        }
+
+        if (e.getSource() == canvas) {
+            drawStart = true;
+            System.out.println("CA X: " + e.getX() + " | Y: " + e.getY());
+
+            level[((int) Math.floor(e.getX() / 40))][((int) Math.floor(e.getY() / 40))] = brush;
+
+            canvas.validate();
+            canvas.repaint();
+        }
     }
 
     @Override
@@ -600,6 +627,11 @@ class gameDrawing extends Canvas {
                 if (BallPuzzle.level[x][y] == 'x') {
                     g.setColor(darkBlue);
                     g.fillRect(x * 40, y * 40, 40, 40);
+                }
+
+                if (BallPuzzle.level[x][y] == 's' && BallPuzzle.drawStart) {
+                    g.setColor(Color.red);
+                    g.fillOval(x * 40, y * 40, 40, 40);
                 }
 
                 //Draws a green box where the end point of the level is.
