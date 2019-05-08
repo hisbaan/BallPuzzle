@@ -171,11 +171,23 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     }
 
     public void levelEditor() {
+        if (DEBUG) System.out.println("levelEditor ran");
         levelEditorFrame.setSize(900, 850);
         levelEditorFrame.setLayout(new BorderLayout());
 
+        canvas.setFocusable(false);
+        levelEditorDrawing.setFocusable(false);
+        levelEditorPanel.setFocusable(false);
+        levelEditorSaveButton.setFocusable(false);
+        levelEditorResetButton.setFocusable(false);
+        levelEditorBackButton.setFocusable(false);
+
+        levelEditorFrame.setFocusable(true);
+
         levelEditorFrame.add(canvas, BorderLayout.CENTER);
         levelEditorFrame.add(levelEditorDrawing, BorderLayout.EAST);
+//        if (levelEditorFrame.getMouseListeners().length < 1)
+            levelEditorFrame.addMouseListener(this);
 
         canvas.setSize(800, 800);
         levelEditorDrawing.setSize(100, 800);
@@ -411,7 +423,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             //TODO add a save method that checks whether the level includes a start and end tile and other requirements
             File file;
 
-            if(editingNewLevel) {
+            if (editingNewLevel) {
                 file = new File("./customLevels/" + newLevel + ".txt");
             } else {
                 file = new File("./customLevels/" + existingLevelName + ".txt");
@@ -485,7 +497,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     @Override
     public void mousePressed(MouseEvent e) {
-
+        System.out.println("Mouse Clicked");
+//        if (e.getSource() == levelEditorFrame) {
+        System.out.println("X: " + e.getX() + " | Y: " + e.getY());
+//        }
     }
 
     @Override
