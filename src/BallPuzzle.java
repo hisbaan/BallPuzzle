@@ -155,6 +155,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         if (DEBUG) System.out.println("mainMenu ran");
 
         mainFrame.setSize(800, 800);
+        mainFrame.setResizable(false);
         if (mainFrame.getWindowListeners().length < 1) mainFrame.addWindowListener(this);
         mainFrame.setLayout(new BorderLayout());
 
@@ -227,6 +228,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         if (DEBUG) System.out.println("gameStart ran");
 
         gameFrame.setSize(800, 850);
+        gameFrame.setResizable(false);
         if (gameFrame.getWindowListeners().length < 1) gameFrame.addWindowListener(this);
         if (gameFrame.getKeyListeners().length < 1) gameFrame.addKeyListener(this);
         gameFrame.setLayout(new BorderLayout());
