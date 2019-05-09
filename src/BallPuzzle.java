@@ -360,56 +360,56 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 //--------------------------------------------------------------------------------------------------------------
                 }
                 try {
-                    if (ballPosition[x][y] == '1' && level[x + 1][y] == '^' && direction.equals("west")) {
+                    if (ballPosition[x][y] == '1' && level[x + 1][y] == '^' && direction.equals("east")) {
                         direction = "";
                     }
                 } catch (Exception e) {
 
                 }
                 try {
-                    if (ballPosition[x][y] == '1' && level[x - 1][y] == '^' && direction.equals("east")) {
+                    if (ballPosition[x][y] == '1' && level[x - 1][y] == '^' && direction.equals("west")) {
                         direction = "";
                     }
                 } catch (Exception e) {
 
                 }
                 try {
-                    if (ballPosition[x][y] == '1' && level[x + 1][y] == 'v' && direction.equals("west")) {
+                    if (ballPosition[x][y] == '1' && level[x + 1][y] == 'v' && direction.equals("east")) {
                         direction = "";
                     }
                 } catch (Exception e) {
 
                 }
                 try {
-                    if (ballPosition[x][y] == '1' && level[x - 1][y] == 'v' && direction.equals("east")) {
+                    if (ballPosition[x][y] == '1' && level[x - 1][y] == 'v' && direction.equals("west")) {
                         direction = "";
                     }
                 } catch (Exception e) {
 
                 }
                 try {
-                    if (ballPosition[x][y] == '1' && level[x][y + 1] == '<' && direction.equals("south")) {
+                    if (ballPosition[x][y] == '1' && level[x][y + 1] == '<' && direction.equals("north")) {
                         direction = "";
                     }
                 } catch (Exception e) {
 
                 }
                 try {
-                    if (ballPosition[x][y] == '1' && level[x][y - 1] == '<' && direction.equals("north")) {
+                    if (ballPosition[x][y] == '1' && level[x][y - 1] == '<' && direction.equals("south")) {
                         direction = "";
                     }
                 } catch (Exception e) {
 
                 }
                 try {
-                    if (ballPosition[x][y] == '1' && level[x][y + 1] == '>' && direction.equals("south")) {
+                    if (ballPosition[x][y] == '1' && level[x][y + 1] == '>' && direction.equals("north")) {
                         direction = "";
                     }
                 } catch (Exception e) {
 
                 }
                 try {
-                    if (ballPosition[x][y] == '1' && level[x][y - 1] == '>' && direction.equals("north")) {
+                    if (ballPosition[x][y] == '1' && level[x][y - 1] == '>' && direction.equals("south")) {
                         direction = "";
                     }
                 } catch (Exception e) {
