@@ -40,7 +40,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     //Variables for game window.
     JFrame gameFrame = new JFrame("Ball Puzzle");
+
+    JPanel gamePanel = new JPanel();
     JButton gameBackButton = new JButton("Back to main menu");
+    JButton restartLevelButton = new JButton("Restart");
 
     public String direction = ""; //String that changes based on the direction selected by the user (via arrow keys).
     Timer movement; //Initializing timer that is mentioned in constructor.
@@ -224,6 +227,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     }
 
     public void gameStart() {
+        movement.start();
         drawStart = false;
         if (DEBUG) System.out.println("gameStart ran");
 
@@ -237,19 +241,29 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         gameBackButton.setFocusable(false);
         canvas.setFocusable(false);
 
-        gameFrame.add(gameBackButton, BorderLayout.SOUTH);
+        gameFrame.add(gamePanel, BorderLayout.SOUTH);
+        gamePanel.setLayout(new GridLayout(1, 2));
+
+        gamePanel.add(gameBackButton);
         if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
+
+        gamePanel.add(restartLevelButton);
+        if (restartLevelButton.getActionListeners().length < 1) restartLevelButton.addActionListener(this);
+
 
         canvas.setSize(800, 800);
         gameFrame.add(canvas, BorderLayout.CENTER);
 
         nextLevel();
 
-        //Sets the starting position of the ball to wherever 's' is in the array that stores the level information.
-
         gameFrame.setVisible(true);
         mainFrame.setVisible(false);
         levelEditorFrame.setVisible(false);
+    }
+
+    public void restartLevel() {
+        levelNumber--;
+        nextLevel();
     }
 
     //Loads in the next level when the method is called.
@@ -258,7 +272,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             JOptionPane.showMessageDialog(gameFrame, "Level " + levelNumber + " complete!\nPress okay to advance:");
         levelNumber++;
 
-        File levelFile = new File("./levels/level" + levelNumber + "raw.txt");
+        File levelFile = new File("./levels/level" + levelNumber + ".txt");
         String levelTemp;
 
         try {
@@ -284,6 +298,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             }
         }
 
+        //Sets the starting position of the ball to wherever 's' is in the array that stores the level information.
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
                 ballPosition[x][y] = '0';
@@ -296,6 +311,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         direction = "";
     }
 
+    //checks the position of the ball in relation to the elements around it so that it can stop, teleport, etc.
     public void checkCondition() {
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
@@ -341,6 +357,62 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                         direction = "";
                     }
                 } catch (Exception e) {
+//--------------------------------------------------------------------------------------------------------------
+                }
+                try {
+                    if (ballPosition[x][y] == '1' && level[x + 1][y] == '^' && direction.equals("west")) {
+                        direction = "";
+                    }
+                } catch (Exception e) {
+
+                }
+                try {
+                    if (ballPosition[x][y] == '1' && level[x - 1][y] == '^' && direction.equals("east")) {
+                        direction = "";
+                    }
+                } catch (Exception e) {
+
+                }
+                try {
+                    if (ballPosition[x][y] == '1' && level[x + 1][y] == 'v' && direction.equals("west")) {
+                        direction = "";
+                    }
+                } catch (Exception e) {
+
+                }
+                try {
+                    if (ballPosition[x][y] == '1' && level[x - 1][y] == 'v' && direction.equals("east")) {
+                        direction = "";
+                    }
+                } catch (Exception e) {
+
+                }
+                try {
+                    if (ballPosition[x][y] == '1' && level[x][y + 1] == '<' && direction.equals("south")) {
+                        direction = "";
+                    }
+                } catch (Exception e) {
+
+                }
+                try {
+                    if (ballPosition[x][y] == '1' && level[x][y - 1] == '<' && direction.equals("north")) {
+                        direction = "";
+                    }
+                } catch (Exception e) {
+
+                }
+                try {
+                    if (ballPosition[x][y] == '1' && level[x][y + 1] == '>' && direction.equals("south")) {
+                        direction = "";
+                    }
+                } catch (Exception e) {
+
+                }
+                try {
+                    if (ballPosition[x][y] == '1' && level[x][y - 1] == '>' && direction.equals("north")) {
+                        direction = "";
+                    }
+                } catch (Exception e) {
 
                 }
 
@@ -382,9 +454,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         }
 
         if (e.getSource() == levelEditorButton) {
-            //TODO JOption Pane where you can select if you want to create a new level or work on a level that is not done yet.
-            //TODO if you select a new file, then name it.
-            //TODO if you want to edit a previous file, enter it's name. or do a dropdown menu with all the current files.
             String[] options = new String[]{"New Level", "Pre-existing Level"};
             int response = JOptionPane.showOptionDialog(mainFrame, "Message", "Title",
                     JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
@@ -396,12 +465,14 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
                 reset();
             } else if (response == 1) {
+                //TODO get a list of the file names
                 existingLevelName = JOptionPane.showInputDialog(mainFrame, "What is the name of the level you would like to edit?");
                 editingNewLevel = false;
 
                 File levelFile = new File("./customLevels/" + existingLevelName + ".txt");
                 String levelTemp;
 
+                //TODO make sure that the file exitst. If it doesn't, either prompt the user or instead just have them select from a dropdown menu.
                 try {
                     levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
                     int z = 0;
@@ -455,6 +526,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton) {
             mainMenu();
         }
+
+        if (e.getSource() == restartLevelButton) {
+            restartLevel();
+        }
     }
 
     //KeyListener methods
@@ -469,22 +544,18 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             if (e.getKeyCode() == KeyEvent.VK_UP) {
                 direction = "north";
                 if (DEBUG) System.out.println("Up arrow key pressed");
-                movement.start();
             }
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                 direction = "south";
                 if (DEBUG) System.out.println("Down arrow key pressed");
-                movement.start();
             }
             if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                 direction = "east";
                 if (DEBUG) System.out.println("right arrow key pressed");
-                movement.start();
             }
             if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                 direction = "west";
                 if (DEBUG) System.out.println("Left arrow key pressed");
-                movement.start();
             }
         }
     }
@@ -503,19 +574,40 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getSource() == levelEditorDrawing) {
-            System.out.println("LE X: " + e.getX() + " | Y: " + e.getY());
+            if (DEBUG) System.out.println("LE X: " + e.getX() + " | Y: " + e.getY());
 
+            //sets the brush variable to the corresponding character depending on what block the user clicks on.
             if (e.getX() >= 30 && e.getX() <= 70) {
-                if (e.getY() >= 20 && e.getY() <= 60) {brush = '0';}
-                if (e.getY() >= 80 && e.getY() <= 120) {brush = 'x';}
-                if (e.getY() >= 140 && e.getY() <= 180) {brush = 's';}
-                if (e.getY() >= 200 && e.getY() <= 240) {brush = 'f';}
-                if (e.getY() >= 260 && e.getY() <= 300) {brush = 't';}
-                if (e.getY() >= 320 && e.getY() <= 360) {brush = 'T';}
-                if (e.getY() >= 380 && e.getY() <= 420) {brush = '^';}
-                if (e.getY() >= 440 && e.getY() <= 480) {brush = 'v';}
-                if (e.getY() >= 500 && e.getY() <= 540) {brush = '>';}
-                if (e.getY() >= 560 && e.getY() <= 600) {brush = '<';}
+                if (e.getY() >= 20 && e.getY() <= 60) {
+                    brush = '0';
+                }
+                if (e.getY() >= 80 && e.getY() <= 120) {
+                    brush = 'x';
+                }
+                if (e.getY() >= 140 && e.getY() <= 180) {
+                    brush = 's';
+                }
+                if (e.getY() >= 200 && e.getY() <= 240) {
+                    brush = 'f';
+                }
+                if (e.getY() >= 260 && e.getY() <= 300) {
+                    brush = 't';
+                }
+                if (e.getY() >= 320 && e.getY() <= 360) {
+                    brush = 'T';
+                }
+                if (e.getY() >= 380 && e.getY() <= 420) {
+                    brush = '^';
+                }
+                if (e.getY() >= 440 && e.getY() <= 480) {
+                    brush = 'v';
+                }
+                if (e.getY() >= 500 && e.getY() <= 540) {
+                    brush = '>';
+                }
+                if (e.getY() >= 560 && e.getY() <= 600) {
+                    brush = '<';
+                }
             }
 
             if (DEBUG) System.out.println("Brush: " + brush);
@@ -523,8 +615,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         if (e.getSource() == canvas) {
             drawStart = true;
-            System.out.println("CA X: " + e.getX() + " | Y: " + e.getY());
+            if (DEBUG) System.out.println("GB X: " + e.getX() + " | Y: " + e.getY());
 
+            //sets the tile that the user clicks on to the current brush.
             level[((int) Math.floor(e.getX() / 40))][((int) Math.floor(e.getY() / 40))] = brush;
 
             canvas.validate();
@@ -620,8 +713,6 @@ class gameDrawing extends Canvas {
 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
-
-
                 g.setColor(Color.white);
                 g.drawLine(x * 40, 0, x * 40, 800);
                 g.drawLine(0, y * 40, 800, y * 40);
@@ -631,6 +722,7 @@ class gameDrawing extends Canvas {
                     g.fillRect(x * 40, y * 40, 40, 40);
                 }
 
+                //Draws the start block if the level editor is on. If it is not, then the start block will not be drawn.
                 if (BallPuzzle.level[x][y] == 's' && BallPuzzle.drawStart) {
                     g.setColor(Color.red);
                     g.fillOval(x * 40, y * 40, 40, 40);
@@ -726,8 +818,12 @@ class gameDrawing extends Canvas {
                     g.fillPolygon(leftTriangle);
                 }
 
+                g.setColor(Color.white);
+                g.drawLine(x * 40, 0, x * 40, 800);
+                g.drawLine(0, y * 40, 800, y * 40);
+
                 //Draws the ball whenever it moves.
-                if (BallPuzzle.ballPosition[x][y] == '1') {
+                if (BallPuzzle.ballPosition[x][y] == '1' && !BallPuzzle.drawStart) {
                     g.setColor(Color.red);
                     g.fillOval(x * 40, y * 40, 40, 40);
                 }
