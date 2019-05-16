@@ -63,6 +63,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         mainMenu();
 
+        //TODO add a timer that counts seconds and minutes that the game has been active and displays that.
         //Timer that controls the movement of the ball on the board.
         movement = new Timer(50, e -> {
             canvas.validate();
@@ -212,12 +213,15 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         levelEditorFrame.setVisible(true);
         mainFrame.setVisible(false);
         gameFrame.setVisible(false);
+
+        movement.start();
     }
 
     public void reset() {
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
                 level[x][y] = '0';
+                ballPosition[x][y] = '0';
             }
         }
 
@@ -607,6 +611,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         }
 
         if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton) {
+            movement.stop();
             mainMenu();
         }
 
