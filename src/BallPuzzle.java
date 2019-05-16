@@ -267,15 +267,15 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         direction = "";
         movement.stop();
 
-        for(int y = 0; y < 20; y++) {
+        for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
                 ballPosition[x][y] = '0';
             }
         }
 
-        for(int y = 0; y < 20; y++) {
+        for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
-                if(level[x][y] == 's') ballPosition[x][y] = '1';
+                if (level[x][y] == 's') ballPosition[x][y] = '1';
             }
         }
 
@@ -513,9 +513,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
                 }
 
-                //TODO get rid of null levels from the array
-
-
                 editingNewLevel = false;
 
                 File levelFile = new File("./customLevels/" + existingLevelName + ".txt");
@@ -545,29 +542,67 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         if (e.getSource() == levelEditorSaveButton) {
             //TODO add a save method that checks whether the level includes a start and end tile and other requirements
-            File file;
 
-            if (editingNewLevel) {
-                file = new File("./customLevels/" + newLevel + ".txt");
-            } else {
-                file = new File("./customLevels/" + existingLevelName + ".txt");
-            }
-
-            String rawLevelData = "";
+            int sCounter = 0;
+            int fCounter = 0;
 
             for (int y = 0; y < 20; y++) {
                 for (int x = 0; x < 20; x++) {
-                    rawLevelData += level[x][y];
+                    if (level[x][y] == 's') {
+                        sCounter++;
+                    } else if (level[x][y] == 'f') {
+                        fCounter++;
+                    }
                 }
             }
 
-            try {
-                Files.write(file.toPath(), rawLevelData.getBytes(StandardCharsets.UTF_8));
+            if (sCounter == 1 && fCounter > 0) {
+                File file;
 
-                if (DEBUG) System.out.println("Level Saved");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                if (DEBUG) System.out.println("Level Not Saved");
+                if (editingNewLevel) {
+                    file = new File("./customLevels/" + newLevel + ".txt");
+                } else {
+                    file = new File("./customLevels/" + existingLevelName + ".txt");
+                }
+
+                String rawLevelData = "";
+
+                for (int y = 0; y < 20; y++) {
+                    for (int x = 0; x < 20; x++) {
+                        rawLevelData += level[x][y];
+                    }
+                }
+
+                try {
+                    Files.write(file.toPath(), rawLevelData.getBytes(StandardCharsets.UTF_8));
+
+                    if (DEBUG) System.out.println("Level Saved");
+
+                    JOptionPane.showMessageDialog(levelEditorFrame, "Level Saved");
+
+                    //TODO add an option to go back to the main menu when the level is saved
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    if (DEBUG) System.out.println("Level Not Saved");
+
+                    JOptionPane.showMessageDialog(levelEditorFrame, "Level Not Saved: \nInternal error");
+                }
+
+            } else {
+                //TODO add a JOptionPane to tell the user that the level was not saved
+                String message = "";
+
+                if (sCounter < 1) {
+                    message += "\nNo start block";
+                }
+                if (sCounter > 1) {
+                    message += "\nToo many start blocks";
+                }
+                if (fCounter < 1) {
+                    message += "\nNo finish block";
+                }
+
+                JOptionPane.showMessageDialog(levelEditorFrame, "Level Not Saved:" + message);
             }
         }
 
