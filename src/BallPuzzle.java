@@ -10,7 +10,6 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Arrays;
 import javax.swing.*;
 
 public class BallPuzzle implements ActionListener, WindowListener, KeyListener, MouseListener {
@@ -42,12 +41,19 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     //Variables for game window.
     JFrame gameFrame = new JFrame("Ball Puzzle");
 
-    JPanel gamePanel = new JPanel();
+    JPanel bottomGamePanel = new JPanel();
+    JPanel topGamePanel = new JPanel();
     JButton gameBackButton = new JButton("Back to main menu");
     JButton restartLevelButton = new JButton("Restart");
 
+    JButton timer = new JButton();
+    JButton levelButton = new JButton(); //TODO make level button allow the user to choose the level that they would like to play (but only go backwards, not forwards).
+
     public String direction = ""; //String that changes based on the direction selected by the user (via arrow keys).
     Timer movement; //Initializing timer that is mentioned in constructor.
+
+    Timer gameTime;
+    public int gameTimer = 0;
 
     public int levelNumber = 0;
     public static char[][] level = new char[20][20]; //Char array that tracks the blocks on the level.
@@ -63,7 +69,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         mainMenu();
 
-        //TODO add a timer that counts seconds and minutes that the game has been active and displays that.
         //Timer that controls the movement of the ball on the board.
         movement = new Timer(50, e -> {
             canvas.validate();
@@ -154,6 +159,14 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                     break;
             }
         });
+
+        //TODO display game timer on the main game window. Starts when you open the level menu, ends when you win or click the back button.
+        //TODO add a timer that counts seconds and minutes that the game has been active and displays that.
+
+        gameTime = new Timer(1000, e -> {
+            gameTimer++;
+            timer.setText("" + gameTimer);
+        });
     }
 
     public void mainMenu() {
@@ -233,6 +246,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     public void gameStart() {
         movement.start();
+        gameTime.start();
         drawStart = false;
         if (DEBUG) System.out.println("gameStart ran");
 
@@ -246,19 +260,26 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         gameBackButton.setFocusable(false);
         canvas.setFocusable(false);
         restartLevelButton.setFocusable(false);
-
-        gameFrame.add(gamePanel, BorderLayout.SOUTH);
-        gamePanel.setLayout(new GridLayout(1, 2));
-
-        gamePanel.add(gameBackButton);
-        if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
-
-        gamePanel.add(restartLevelButton);
-        if (restartLevelButton.getActionListeners().length < 1) restartLevelButton.addActionListener(this);
-
+        timer.setFocusable(false);
 
         canvas.setSize(800, 800);
         gameFrame.add(canvas, BorderLayout.CENTER);
+
+        gameFrame.add(bottomGamePanel, BorderLayout.SOUTH);
+        bottomGamePanel.setLayout(new GridLayout(1, 4));
+
+        bottomGamePanel.add(timer);
+
+        bottomGamePanel.add(levelButton);
+
+        bottomGamePanel.add(gameBackButton);
+        if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
+
+        bottomGamePanel.add(restartLevelButton);
+        if (restartLevelButton.getActionListeners().length < 1) restartLevelButton.addActionListener(this);
+
+
+
 
         nextLevel();
 
@@ -293,6 +314,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         if (levelNumber > 0)
             JOptionPane.showMessageDialog(gameFrame, "Level " + levelNumber + " complete!\nPress okay to advance:");
         levelNumber++;
+
+        levelButton.setText("Level: " + levelNumber);
 
         File levelFile = new File("./levels/level" + levelNumber + ".txt");
         String levelTemp;
@@ -777,7 +800,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     }
 }
 
-//Paint class
+//Paint class that draws the main board.
 class gameDrawing extends Canvas {
 
     //Colours
@@ -923,6 +946,7 @@ class gameDrawing extends Canvas {
     }
 }
 
+//Paint class that draws the 'brush' selection area of the level editor.
 class levelEditorDrawing extends Canvas {
 
     Color darkGreen = new Color(0x006400);
