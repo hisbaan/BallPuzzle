@@ -42,7 +42,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     JFrame gameFrame = new JFrame("Ball Puzzle");
 
     JPanel bottomGamePanel = new JPanel();
-    JPanel topGamePanel = new JPanel();
     JButton gameBackButton = new JButton("Back to main menu");
     JButton restartLevelButton = new JButton("Restart");
 
@@ -54,6 +53,11 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     Timer gameTime;
     public int gameTimer = 0;
+    public int gameTimerMinutes;
+    public int gameTimerSeconds;
+
+    public String gameTimerMinutesString;
+    public String gameTimerSecondsString;
 
     public int levelNumber = 0;
     public static char[][] level = new char[20][20]; //Char array that tracks the blocks on the level.
@@ -165,7 +169,18 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         gameTime = new Timer(1000, e -> {
             gameTimer++;
-            timer.setText("" + gameTimer);
+
+            gameTimerMinutes = gameTimer / 60;
+            gameTimerSeconds = gameTimer % 60;
+
+            if (gameTimerMinutes < 10) {
+                gameTimerMinutesString = "0" + gameTimerMinutes;
+            }
+
+            if (gameTimerSeconds < 10) {
+                gameTimerSecondsString = "0" + gameTimerSeconds;
+            }
+            timer.setText(gameTimerMinutesString + ":" + gameTimerSecondsString);
         });
     }
 
@@ -248,6 +263,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         movement.start();
         gameTime.start();
         drawStart = false;
+        timer.setText("00:00");
         if (DEBUG) System.out.println("gameStart ran");
 
         gameFrame.setSize(800, 850);
@@ -261,6 +277,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         canvas.setFocusable(false);
         restartLevelButton.setFocusable(false);
         timer.setFocusable(false);
+        levelButton.setFocusable(false);
 
         canvas.setSize(800, 800);
         gameFrame.add(canvas, BorderLayout.CENTER);
@@ -271,15 +288,13 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         bottomGamePanel.add(timer);
 
         bottomGamePanel.add(levelButton);
+        if (levelButton.getActionListeners().length < 1) levelButton.addActionListener(this);
 
         bottomGamePanel.add(gameBackButton);
         if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
 
         bottomGamePanel.add(restartLevelButton);
         if (restartLevelButton.getActionListeners().length < 1) restartLevelButton.addActionListener(this);
-
-
-
 
         nextLevel();
 
@@ -568,8 +583,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         }
 
         if (e.getSource() == levelEditorSaveButton) {
-            //TODO add a save method that checks whether the level includes a start and end tile and other requirements
-
             int sCounter = 0;
             int fCounter = 0;
 
@@ -605,9 +618,12 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
                     if (DEBUG) System.out.println("Level Saved");
 
-                    JOptionPane.showMessageDialog(levelEditorFrame, "Level Saved");
+                    int decision = JOptionPane.showConfirmDialog(levelEditorFrame, "Level Saved\nWould you like to return to the main menu?", "Return to Main Menu", JOptionPane.YES_NO_OPTION);
 
-                    //TODO add an option to go back to the main menu when the level is saved
+                    if (decision == JOptionPane.YES_OPTION) {
+                        mainMenu();
+                    }
+
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     if (DEBUG) System.out.println("Level Not Saved");
@@ -616,7 +632,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 }
 
             } else {
-                //TODO add a JOptionPane to tell the user that the level was not saved
                 String message = "";
 
                 if (sCounter < 1) {
