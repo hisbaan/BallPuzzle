@@ -22,12 +22,15 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     //Variables for main menu.
     JFrame mainFrame = new JFrame("Main Menu");
     JPanel mainPanel = new JPanel();
+
     JButton startGame = new JButton("Start Game");
     JButton levelEditorButton = new JButton("Level Editor");
+    JButton playCustomLevelButton = new JButton("Play Custom Levels");
 
     //Variables for level editor
     JFrame levelEditorFrame = new JFrame("Level Editor");
     JPanel levelEditorPanel = new JPanel();
+
     JButton levelEditorBackButton = new JButton("Back");
     JButton levelEditorSaveButton = new JButton("Save");
     JButton levelEditorResetButton = new JButton("Reset");
@@ -45,7 +48,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     JButton gameBackButton = new JButton("Back to main menu");
     JButton restartLevelButton = new JButton("Restart");
 
-    JButton timer = new JButton();
+    JButton timer = new JButton(); //TODO make this pause the game when clicked then bring up a JOptionPane that when interacted with, resumes the game.
     JButton levelButton = new JButton(); //TODO make level button allow the user to choose the level that they would like to play (but only go backwards, not forwards).
 
     public String direction = ""; //String that changes based on the direction selected by the user (via arrow keys).
@@ -63,6 +66,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     public static char[][] level = new char[20][20]; //Char array that tracks the blocks on the level.
     public static char[][] ballPosition = new char[20][20]; //Char array that tracks the position of the ball on the level.
 
+    //Variables for custom level window.
+    JFrame customLevelFrame = new JFrame();
     gameDrawing canvas = new gameDrawing(); //Instance of class to call paint method
     levelEditorDrawing levelEditorDrawing = new levelEditorDrawing();
 
@@ -164,9 +169,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             }
         });
 
-        //TODO display game timer on the main game window. Starts when you open the level menu, ends when you win or click the back button.
-        //TODO add a timer that counts seconds and minutes that the game has been active and displays that.
-
         gameTime = new Timer(1000, e -> {
             gameTimer++;
 
@@ -175,10 +177,14 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
             if (gameTimerMinutes < 10) {
                 gameTimerMinutesString = "0" + gameTimerMinutes;
+            } else {
+                gameTimerSecondsString = "" + gameTimerMinutes;
             }
 
             if (gameTimerSeconds < 10) {
                 gameTimerSecondsString = "0" + gameTimerSeconds;
+            } else {
+                gameTimerSecondsString = "" + gameTimerSeconds;
             }
             timer.setText(gameTimerMinutesString + ":" + gameTimerSecondsString);
         });
@@ -201,9 +207,16 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         mainPanel.add(levelEditorButton);
         if (levelEditorButton.getActionListeners().length < 1) levelEditorButton.addActionListener(this);
 
+        mainPanel.add(playCustomLevelButton);
+        if (playCustomLevelButton.getActionListeners().length < 1) playCustomLevelButton.addActionListener(this);
+
         mainFrame.setVisible(true);
         gameFrame.setVisible(false);
         levelEditorFrame.setVisible(false);
+        customLevelFrame.setVisible(false);
+
+
+        gameTimer = 0;
     }
 
     public void levelEditor() {
@@ -241,6 +254,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         levelEditorFrame.setVisible(true);
         mainFrame.setVisible(false);
         gameFrame.setVisible(false);
+        customLevelFrame.setVisible(false);
 
         movement.start();
     }
@@ -286,6 +300,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         bottomGamePanel.setLayout(new GridLayout(1, 4));
 
         bottomGamePanel.add(timer);
+        if (timer.getActionListeners().length < 1) timer.addActionListener(this);
 
         bottomGamePanel.add(levelButton);
         if (levelButton.getActionListeners().length < 1) levelButton.addActionListener(this);
@@ -301,6 +316,145 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         gameFrame.setVisible(true);
         mainFrame.setVisible(false);
         levelEditorFrame.setVisible(false);
+        customLevelFrame.setVisible(false);
+    }
+
+    public void getCustomLevels() {
+        String[] listOfFiles;
+
+        try {
+            File customFolder = new File("./customLevels/");
+
+            FilenameFilter textFilter = new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    return name.toLowerCase().endsWith(".txt");
+                }
+            };
+
+            File[] files = customFolder.listFiles(textFilter);
+            listOfFiles = new String[files.length];
+
+            for (int i = 0; i < files.length; i++) {
+                listOfFiles[i] = files[i].toString().substring(15, files[i].toString().length() - 4);
+            }
+
+            try {
+                existingLevelName = (String) JOptionPane.showInputDialog(mainFrame, "Select which level you want to edit from the drop down menu:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[1]);
+            } catch (HeadlessException exc) {
+                existingLevelName = "";
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+
+        }
+
+        editingNewLevel = false;
+
+        File levelFile = new File("./customLevels/" + existingLevelName + ".txt");
+        String levelTemp;
+
+        try {
+            levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
+            int z = 0;
+
+            for (int y = 0; y < 20; y++) {
+                for (int x = 0; x < 20; x++) {
+                    level[x][y] = levelTemp.charAt(z);
+                    z++;
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        loadCustomLevels();
+    }
+
+    public void loadCustomLevels() {
+        levelButton.setText(existingLevelName);
+
+        File levelFile = new File("./customLevels" + existingLevelName + ".txt");
+        String levelTemp;
+
+        try {
+            levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
+            int z = 0;
+
+            for (int y = 0; y < 20; y++) {
+                for (int x = 0; x < 20; x++) {
+                    level[x][y] = levelTemp.charAt(z);
+                    z++;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (DEBUG) {
+            for (int y = 0; y < 20; y++) {
+                for (int x = 0; x < 20; x++) {
+                    System.out.print(level[x][y] + " ");
+                }
+                System.out.println();
+            }
+        }
+
+        //Sets the starting position of the ball to wherever 's' is in the array that stores the level information.
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < 20; x++) {
+                ballPosition[x][y] = '0';
+                if (level[x][y] == 's') {
+                    ballPosition[x][y] = '1';
+                }
+            }
+        }
+
+        direction = "";
+    }
+
+    public void playCustomLevels() { //TODO finish implementing custom level player
+        movement.start();
+        gameTime.start();
+        drawStart = false;
+        timer.setText("00:00");
+        if (DEBUG) System.out.println("gameStart ran");
+
+        customLevelFrame.setSize(800, 850);
+        customLevelFrame.setResizable(false);
+        if (customLevelFrame.getWindowListeners().length < 1) customLevelFrame.addWindowListener(this);
+        if (customLevelFrame.getKeyListeners().length < 1) customLevelFrame.addKeyListener(this);
+        customLevelFrame.setLayout(new BorderLayout());
+
+        customLevelFrame.setFocusable(true);
+        gameBackButton.setFocusable(false);
+        canvas.setFocusable(false);
+        restartLevelButton.setFocusable(false);
+        timer.setFocusable(false);
+        levelButton.setFocusable(false);
+
+        canvas.setSize(800, 800);
+        customLevelFrame.add(canvas, BorderLayout.CENTER);
+
+        customLevelFrame.add(bottomGamePanel, BorderLayout.SOUTH);
+        bottomGamePanel.setLayout(new GridLayout(1, 4));
+
+        bottomGamePanel.add(timer);
+        if (timer.getActionListeners().length < 1) timer.addActionListener(this);
+
+        bottomGamePanel.add(levelButton);
+        if (levelButton.getActionListeners().length < 1) levelButton.addActionListener(this);
+
+        bottomGamePanel.add(gameBackButton);
+        if (gameBackButton.getActionListeners().length < 1) gameBackButton.addActionListener(this);
+
+        bottomGamePanel.add(restartLevelButton);
+        if (restartLevelButton.getActionListeners().length < 1) restartLevelButton.addActionListener(this);
+
+        gameFrame.setVisible(false);
+        mainFrame.setVisible(false);
+        levelEditorFrame.setVisible(false);
+        customLevelFrame.setVisible(true);
     }
 
     public void restartLevel() {
@@ -321,7 +475,13 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         movement.start();
 
-        JOptionPane.showMessageDialog(gameFrame, "Level " + levelNumber + " restarted");
+        if (gameFrame.isVisible()) {
+            JOptionPane.showMessageDialog(gameFrame, "Level " + levelNumber + " restarted");
+        }
+
+        if (customLevelFrame.isVisible()) {
+            JOptionPane.showMessageDialog(customLevelFrame, "Level restarted");
+        }
     }
 
     //Loads in the next level when the method is called.
@@ -376,7 +536,14 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
                 if (ballPosition[x][y] == '1' && level[x][y] == 'f') {
-                    nextLevel();
+                    if (gameFrame.isVisible()) {
+                        nextLevel();
+                    }
+
+                    if (customLevelFrame.isVisible()) {
+                        JOptionPane.showMessageDialog(customLevelFrame, "Level Completed.\nPress okay to continue.");
+                        getCustomLevels();
+                    }
                 }
 
                 if (ballPosition[x][y] == '1' && level[x][y] == 't') {
@@ -575,7 +742,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 }
             }
 
-            levelEditor();
+            levelEditor(); //TODO get file reading code from here
         }
 
         if (e.getSource() == levelEditorResetButton) {
@@ -648,6 +815,11 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             }
         }
 
+        if (e.getSource() == playCustomLevelButton) {
+            getCustomLevels();
+            playCustomLevels();
+        }
+
         if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton) {
             movement.stop();
             mainMenu();
@@ -655,6 +827,23 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         if (e.getSource() == restartLevelButton) {
             restartLevel();
+        }
+
+        if (e.getSource() == timer) {
+            //TODO add pause functionality here
+            movement.stop();
+            gameTime.stop();
+
+            if (gameFrame.isVisible()) {
+                JOptionPane.showMessageDialog(gameFrame, "Game Paused:\nPress okay to resume");
+            }
+
+            if (customLevelFrame.isVisible()) {
+                JOptionPane.showMessageDialog(customLevelFrame, "Game Paused:\nPress okay to resume");
+            }
+
+            movement.start();
+            gameTime.start();
         }
     }
 
@@ -666,25 +855,24 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     @Override
     public void keyPressed(KeyEvent e) {
-
-        //TODO add move counter/timer
-
-        if (direction.equals("")) {
-            if (e.getKeyCode() == KeyEvent.VK_UP) {
-                direction = "north";
-                if (DEBUG) System.out.println("Up arrow key pressed");
-            }
-            if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-                direction = "south";
-                if (DEBUG) System.out.println("Down arrow key pressed");
-            }
-            if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-                direction = "east";
-                if (DEBUG) System.out.println("right arrow key pressed");
-            }
-            if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-                direction = "west";
-                if (DEBUG) System.out.println("Left arrow key pressed");
+        if (e.getSource() == gameFrame || e.getSource() == customLevelFrame) {
+            if (direction.equals("")) {
+                if (e.getKeyCode() == KeyEvent.VK_UP) {
+                    direction = "north";
+                    if (DEBUG) System.out.println("Up arrow key pressed");
+                }
+                if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    direction = "south";
+                    if (DEBUG) System.out.println("Down arrow key pressed");
+                }
+                if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    direction = "east";
+                    if (DEBUG) System.out.println("right arrow key pressed");
+                }
+                if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    direction = "west";
+                    if (DEBUG) System.out.println("Left arrow key pressed");
+                }
             }
         }
     }
