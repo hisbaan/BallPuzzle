@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.Arrays;
 import javax.swing.*;
 
 public class BallPuzzle implements ActionListener, WindowListener, KeyListener, MouseListener {
@@ -42,6 +43,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     public char brush = '0';
 
     //Variables for game window.
+    public boolean canTeleport = true;
+
     JFrame gameFrame = new JFrame("Ball Puzzle");
 
     JPanel bottomGamePanel = new JPanel();
@@ -338,6 +341,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 listOfFiles[i] = files[i].toString().substring(15, files[i].toString().length() - 4);
             }
 
+            Arrays.sort(listOfFiles);
+
             try {
                 existingLevelName = (String) JOptionPane.showInputDialog(mainFrame, "Select which level you want to edit from the drop down menu:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[1]);
             } catch (HeadlessException exc) {
@@ -546,16 +551,32 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                     }
                 }
 
-                if (ballPosition[x][y] == '1' && level[x][y] == 't') {
-                    for (int y2 = 0; y2 < 20; y2++) {
-                        for (int x2 = 0; x2 < 20; x2++) {
-                            if (level[x2][y2] == 'T') {
-                                ballPosition[x2][y2] = '1';
+                if (canTeleport) {
+                    if (ballPosition[x][y] == '1' && level[x][y] == 't') {
+                        for (int y2 = 0; y2 < 20; y2++) {
+                            for (int x2 = 0; x2 < 20; x2++) {
+                                if (level[x2][y2] == 'T') {
+                                    ballPosition[x2][y2] = '1';
+                                }
                             }
                         }
+
+                        ballPosition[x][y] = '0';
+                        canTeleport = false;
                     }
 
-                    ballPosition[x][y] = '0';
+                    if (ballPosition[x][y] == '1' && level[x][y] == 'T') {
+                        for (int y2 = 0; y2 < 20; y2++) {
+                            for (int x2 = 0; x2 < 20; x2++) {
+                                if (level[x2][y2] == 't') {
+                                    ballPosition[x2][y2] = '1';
+                                }
+                            }
+                        }
+
+                        ballPosition[x][y] = '0';
+                        canTeleport = false;
+                    }
                 }
 
                 try {
@@ -711,6 +732,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                         listOfFiles[i] = files[i].toString().substring(15, files[i].toString().length() - 4);
                     }
 
+                    Arrays.sort(listOfFiles);
+
                     try {
                         existingLevelName = (String) JOptionPane.showInputDialog(mainFrame, "Select which level you want to edit from the drop down menu:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[1]);
                     } catch (HeadlessException exc) {
@@ -830,7 +853,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         }
 
         if (e.getSource() == timer) {
-            //TODO add pause functionality here
             movement.stop();
             gameTime.stop();
 
@@ -860,18 +882,22 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
                     direction = "north";
                     if (DEBUG) System.out.println("Up arrow key pressed");
+                    canTeleport = true;
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     direction = "south";
                     if (DEBUG) System.out.println("Down arrow key pressed");
+                    canTeleport = true;
                 }
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     direction = "east";
                     if (DEBUG) System.out.println("right arrow key pressed");
+                    canTeleport = true;
                 }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     direction = "west";
                     if (DEBUG) System.out.println("Left arrow key pressed");
+                    canTeleport = true;
                 }
             }
         }
