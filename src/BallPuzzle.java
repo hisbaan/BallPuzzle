@@ -102,6 +102,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
                                 try {
                                     ballPosition[x][y - 1] = '1';
+                                    canTeleport = true;
                                 } catch (Exception ex) {
                                     ballPosition[x][19] = '1';
                                     if (DEBUG) System.out.println("Ball hit " + direction + " wall");
@@ -119,7 +120,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                         for (int x = 19; x > -1; x--) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
-
+                                canTeleport = true;
                                 try {
                                     ballPosition[x][y + 1] = '1';
                                 } catch (Exception ex) {
@@ -138,7 +139,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                         for (int x = 19; x > -1; x--) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
-
+                                canTeleport = true;
                                 try {
                                     ballPosition[x + 1][y] = '1';
                                 } catch (Exception ex) {
@@ -157,7 +158,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                         for (int x = 0; x < 20; x++) {
                             if (ballPosition[x][y] == '1') {
                                 ballPosition[x][y] = '0';
-
+                                canTeleport = true;
                                 try {
                                     ballPosition[x - 1][y] = '1';
                                 } catch (Exception ex) {
@@ -363,12 +364,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         }
 
         editingNewLevel = false;
-
-//        if (levelNumber < 10) {
-//            levelNumberString = "0" + levelNumber;
-//        } else {
-//            levelNumberString = "" + levelNumber;
-//        }
 
         File levelFile = new File("./customLevels/" + existingLevelName + ".txt");
         String levelTemp;
@@ -899,22 +894,22 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
                     direction = "north";
                     if (DEBUG) System.out.println("Up arrow key pressed");
-                    canTeleport = true;
+
                 }
                 if (e.getKeyCode() == KeyEvent.VK_DOWN) {
                     direction = "south";
                     if (DEBUG) System.out.println("Down arrow key pressed");
-                    canTeleport = true;
+
                 }
                 if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
                     direction = "east";
                     if (DEBUG) System.out.println("right arrow key pressed");
-                    canTeleport = true;
+
                 }
                 if (e.getKeyCode() == KeyEvent.VK_LEFT) {
                     direction = "west";
                     if (DEBUG) System.out.println("Left arrow key pressed");
-                    canTeleport = true;
+
                 }
             }
         }
