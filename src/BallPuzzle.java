@@ -51,8 +51,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     JButton gameBackButton = new JButton("Back to main menu");
     JButton restartLevelButton = new JButton("Restart");
 
-    JButton timer = new JButton(); //TODO make this pause the game when clicked then bring up a JOptionPane that when interacted with, resumes the game.
-    JButton levelButton = new JButton(); //TODO make level button allow the user to choose the level that they would like to play (but only go backwards, not forwards).
+    JButton timer = new JButton();
+    JButton levelButton = new JButton();
 
     public String direction = ""; //String that changes based on the direction selected by the user (via arrow keys).
     Timer movement; //Initializing timer that is mentioned in constructor.
@@ -68,6 +68,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     public int levelNumber = 0;
     public static char[][] level = new char[20][20]; //Char array that tracks the blocks on the level.
     public static char[][] ballPosition = new char[20][20]; //Char array that tracks the position of the ball on the level.
+
+    public String levelNumberString;
 
     //Variables for custom level window.
     JFrame customLevelFrame = new JFrame();
@@ -344,7 +346,13 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             Arrays.sort(listOfFiles);
 
             try {
-                existingLevelName = (String) JOptionPane.showInputDialog(mainFrame, "Select which level you want to edit from the drop down menu:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[1]);
+                JFrame temp;
+                if (mainFrame.isVisible()) {
+                    temp = mainFrame;
+                } else {
+                    temp = customLevelFrame;
+                }
+                existingLevelName = (String) JOptionPane.showInputDialog(temp, "Select which level you want to edit from the drop down menu:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[0]);
             } catch (HeadlessException exc) {
                 existingLevelName = "";
             }
@@ -355,6 +363,12 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         }
 
         editingNewLevel = false;
+
+//        if (levelNumber < 10) {
+//            levelNumberString = "0" + levelNumber;
+//        } else {
+//            levelNumberString = "" + levelNumber;
+//        }
 
         File levelFile = new File("./customLevels/" + existingLevelName + ".txt");
         String levelTemp;
@@ -379,7 +393,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     public void loadCustomLevels() {
         levelButton.setText(existingLevelName);
 
-        File levelFile = new File("./customLevels" + existingLevelName + ".txt");
+        File levelFile = new File("./customLevels/" + existingLevelName + ".txt");
         String levelTemp;
 
         try {
@@ -469,12 +483,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
                 ballPosition[x][y] = '0';
-            }
-        }
-
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 20; x++) {
-                if (level[x][y] == 's') ballPosition[x][y] = '1';
+                if (level[x][y] == 's') {
+                    ballPosition[x][y] = '1';
+                }
             }
         }
 
@@ -497,7 +508,13 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         levelButton.setText("Level: " + levelNumber);
 
-        File levelFile = new File("./levels/level" + levelNumber + ".txt");
+        if (levelNumber < 10) {
+            levelNumberString = "0" + levelNumber;
+        } else {
+            levelNumberString = "" + levelNumber;
+        }
+
+        File levelFile = new File("./levels/level" + levelNumberString + ".txt");
         String levelTemp;
 
         try {
@@ -735,7 +752,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                     Arrays.sort(listOfFiles);
 
                     try {
-                        existingLevelName = (String) JOptionPane.showInputDialog(mainFrame, "Select which level you want to edit from the drop down menu:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[1]);
+                        existingLevelName = (String) JOptionPane.showInputDialog(mainFrame, "Select which level you want to edit from the drop down menu:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[0]);
                     } catch (HeadlessException exc) {
                         existingLevelName = "";
                     }
