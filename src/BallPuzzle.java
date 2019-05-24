@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Arrays;
 import javax.swing.*;
+import java.awt.Cursor;
 
 public class BallPuzzle implements ActionListener, WindowListener, KeyListener, MouseListener {
     public static void main(String[] args) {
@@ -75,6 +76,40 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     JFrame customLevelFrame = new JFrame();
     gameDrawing canvas = new gameDrawing(); //Instance of class to call paint method
     levelEditorDrawing levelEditorDrawing = new levelEditorDrawing();
+
+    //Custom Cursors
+    //TODO take screenshots and then add the correct directory.
+    Toolkit toolkit = Toolkit.getDefaultToolkit();
+    Image image0 = toolkit.getImage("./mouseIcons/0.ico");
+    Cursor cursor0 = toolkit.createCustomCursor(image0, new Point(0, 0), "img");
+
+    Image imageX = toolkit.getImage("./mouseIcons/X.ico");
+    Cursor cursorX = toolkit.createCustomCursor(imageX, new Point(1, 1), "img");
+
+    Image imageS = toolkit.getImage("./mouseIcons/S.ico");
+    Cursor cursorS = toolkit.createCustomCursor(imageS, new Point(1, 1), "img");
+
+    Image imageF = toolkit.getImage("./mouseIcons/F.ico");
+    Cursor cursorF = toolkit.createCustomCursor(imageF, new Point(1, 1), "img");
+
+    Image imageT1 = toolkit.getImage("./mouseIcons/T1.ico");
+    Cursor cursorT1 = toolkit.createCustomCursor(imageT1, new Point(1, 1), "img");
+
+    Image imageT2 = toolkit.getImage("./mouseIcons/T2.ico");
+    Cursor cursorT2 = toolkit.createCustomCursor(imageT2, new Point(1, 1), "img");
+
+    Image imageUpBlock = toolkit.getImage("./mouseIcons/UpBlock.ico");
+    Cursor cursorUpBlock = toolkit.createCustomCursor(imageUpBlock, new Point(1, 1), "img");
+
+    Image imageDownBlock = toolkit.getImage("./mouseIcons/DownBlock.ico");
+    Cursor cursorDownBlock = toolkit.createCustomCursor(imageDownBlock, new Point(1, 1), "img");
+
+    Image imageLeftBlock = toolkit.getImage("./mouseIcons/LeftBlock.ico");
+    Cursor cursorLeftBlock = toolkit.createCustomCursor(imageLeftBlock, new Point(1, 1), "img");
+
+    Image imageRightBlock = toolkit.getImage("./mouseIcons/RightBlock.ico");
+    Cursor cursorRightBlock = toolkit.createCustomCursor(imageRightBlock, new Point(1, 1), "img");
+
 
     BallPuzzle() {
         //Calling the paint method to draw the canvas initially.
@@ -325,7 +360,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         customLevelFrame.setVisible(false);
     }
 
-    public void getCustomLevels() {
+    public void getCustomLevels() { //TODO add an option for the user to go back to the main menu if they don't want to play another level.
         String[] listOfFiles;
 
         try {
@@ -353,7 +388,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 } else {
                     temp = customLevelFrame;
                 }
-                existingLevelName = (String) JOptionPane.showInputDialog(temp, "Select which level you want to edit from the drop down menu:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[0]);
+                existingLevelName = (String) JOptionPane.showInputDialog(temp, "Select which level you want to play:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[0]);
             } catch (HeadlessException exc) {
                 existingLevelName = "";
             }
@@ -427,7 +462,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         direction = "";
     }
 
-    public void playCustomLevels() { //TODO finish implementing custom level player
+    public void playCustomLevels() {
         movement.start();
         gameTime.start();
         drawStart = false;
@@ -558,8 +593,13 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                     }
 
                     if (customLevelFrame.isVisible()) {
-                        JOptionPane.showMessageDialog(customLevelFrame, "Level Completed.\nPress okay to continue.");
-                        getCustomLevels();
+                        int temp = JOptionPane.showConfirmDialog(customLevelFrame, "Level Completed.\nWould you like to continue?", "Continue?", JOptionPane.YES_NO_OPTION);
+
+                        if (temp == JOptionPane.YES_OPTION) {
+                            getCustomLevels();
+                        } else {
+                            mainMenu();
+                        }
                     }
                 }
 
@@ -747,7 +787,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                     Arrays.sort(listOfFiles);
 
                     try {
-                        existingLevelName = (String) JOptionPane.showInputDialog(mainFrame, "Select which level you want to edit from the drop down menu:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[0]);
+                        existingLevelName = (String) JOptionPane.showInputDialog(mainFrame, "Select which level you want to play:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[0]);
                     } catch (HeadlessException exc) {
                         existingLevelName = "";
                     }
@@ -777,7 +817,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 }
             }
 
-            levelEditor(); //TODO get file reading code from here
+            levelEditor();
         }
 
         if (e.getSource() == levelEditorResetButton) {
@@ -820,9 +860,20 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
                     if (DEBUG) System.out.println("Level Saved");
 
-                    int decision = JOptionPane.showConfirmDialog(levelEditorFrame, "Level Saved\nWould you like to return to the main menu?", "Return to Main Menu", JOptionPane.YES_NO_OPTION);
+                    String[] options = {"Play Level", "Return to Main Menu", "Continue Editing"};
 
-                    if (decision == JOptionPane.YES_OPTION) {
+                    int decision = JOptionPane.showOptionDialog(levelEditorFrame, "Level Saved\nWould you like to play your level or return to the main menu?", "", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+                    if (decision == 0) {
+
+                        if (editingNewLevel) {
+                            existingLevelName = newLevel;
+                        }
+                        //TODO load custom level here.
+                        reset();
+
+                        playCustomLevels();
+                    } else if (decision == 1) {
                         mainMenu();
                     }
 
@@ -935,33 +986,43 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             if (e.getX() >= 30 && e.getX() <= 70) {
                 if (e.getY() >= 20 && e.getY() <= 60) {
                     brush = '0';
+                    levelEditorFrame.setCursor(cursor0);
                 }
                 if (e.getY() >= 80 && e.getY() <= 120) {
                     brush = 'x';
+                    levelEditorFrame.setCursor(cursorX);
                 }
                 if (e.getY() >= 140 && e.getY() <= 180) {
                     brush = 's';
+                    levelEditorFrame.setCursor(cursorS);
                 }
                 if (e.getY() >= 200 && e.getY() <= 240) {
                     brush = 'f';
+                    levelEditorFrame.setCursor(cursorF);
                 }
                 if (e.getY() >= 260 && e.getY() <= 300) {
                     brush = 't';
+                    levelEditorFrame.setCursor(cursorT1);
                 }
                 if (e.getY() >= 320 && e.getY() <= 360) {
                     brush = 'T';
+                    levelEditorFrame.setCursor(cursorT2);
                 }
                 if (e.getY() >= 380 && e.getY() <= 420) {
                     brush = '^';
+                    levelEditorFrame.setCursor(cursorUpBlock);
                 }
                 if (e.getY() >= 440 && e.getY() <= 480) {
                     brush = 'v';
+                    levelEditorFrame.setCursor(cursorDownBlock);
                 }
                 if (e.getY() >= 500 && e.getY() <= 540) {
                     brush = '>';
+                    levelEditorFrame.setCursor(cursorRightBlock);
                 }
                 if (e.getY() >= 560 && e.getY() <= 600) {
                     brush = '<';
+                    levelEditorFrame.setCursor(cursorLeftBlock);
                 }
             }
 
