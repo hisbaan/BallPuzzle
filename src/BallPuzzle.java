@@ -78,7 +78,6 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     levelEditorDrawing levelEditorDrawing = new levelEditorDrawing();
 
     //Custom Cursors
-    //TODO take screenshots and then add the correct directory.
     Toolkit toolkit = Toolkit.getDefaultToolkit();
     Image image0 = toolkit.getImage("./mouseIcons/0.ico");
     Cursor cursor0 = toolkit.createCustomCursor(image0, new Point(0, 0), "img");
@@ -360,7 +359,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         customLevelFrame.setVisible(false);
     }
 
-    public void getCustomLevels() { //TODO add an option for the user to go back to the main menu if they don't want to play another level.
+    public void getCustomLevels() {
         String[] listOfFiles;
 
         try {
@@ -588,6 +587,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
                 if (ballPosition[x][y] == '1' && level[x][y] == 'f') {
+
+                    direction = "";
+
                     if (gameFrame.isVisible()) {
                         nextLevel();
                     }
@@ -869,8 +871,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                         if (editingNewLevel) {
                             existingLevelName = newLevel;
                         }
-                        //TODO load custom level here.
+
                         reset();
+                        loadCustomLevels();
 
                         playCustomLevels();
                     } else if (decision == 1) {
