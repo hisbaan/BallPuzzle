@@ -24,6 +24,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     //Variables for main menu.
     JFrame mainFrame = new JFrame("Main Menu");
     JPanel mainPanel = new JPanel();
+    JLabel titleLabel = new JLabel();
 
     JButton startGame = new JButton("Start Game");
     JButton levelEditorButton = new JButton("Level Editor");
@@ -237,6 +238,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         mainFrame.setResizable(false);
         if (mainFrame.getWindowListeners().length < 1) mainFrame.addWindowListener(this);
         mainFrame.setLayout(new BorderLayout());
+
+        titleLabel.setIcon(new ImageIcon("./images/Ball Puzzle Main Menu Splash Screen.png"));
+        mainFrame.add(titleLabel, BorderLayout.CENTER);
 
         mainFrame.add(mainPanel, BorderLayout.SOUTH);
 
