@@ -986,7 +986,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     @Override
     public void mousePressed(MouseEvent e) {
-        if (e.getSource() == levelEditorDrawing) {
+        if (e.getSource() == levelEditorDrawing && levelEditorFrame.isVisible()) {
             if (DEBUG) System.out.println("LE X: " + e.getX() + " | Y: " + e.getY());
 
             //sets the brush variable to the corresponding character depending on what block the user clicks on.
@@ -1036,7 +1036,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             if (DEBUG) System.out.println("Brush: " + brush);
         }
 
-        if (e.getSource() == canvas) {
+        if (e.getSource() == canvas && levelEditorFrame.isVisible()) {
             drawStart = true;
             if (DEBUG) System.out.println("GB X: " + e.getX() + " | Y: " + e.getY());
 
