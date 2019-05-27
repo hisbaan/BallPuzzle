@@ -5,7 +5,8 @@ class levelEditorDrawing extends Canvas {
 
     Color darkGreen = new Color(0x006400);
     Color darkBlue = new Color(0x005994);
-    Color darkOrange = new Color(0xCD3E0E);
+    Color portalOrange = new Color(0xED6900);
+    Color portalBlue = new Color(0x1C5DFF);
     Color purple = new Color(0xA100F7);
 
     levelEditorDrawing() {
@@ -36,13 +37,13 @@ class levelEditorDrawing extends Canvas {
         g.fillRect(45, 215, 10, 10);
 
         //t block
-        g.setColor(darkOrange);
+        g.setColor(portalOrange);
         g.fillRect(30, 260, 40, 40);
         g.setColor(Color.white);
         g.fillRect(35, 265, 30, 30);
 
         //T block
-        g.setColor(Color.orange);
+        g.setColor(portalBlue);
         g.fillRect(30, 320, 40, 40);
         g.setColor(Color.white);
         g.fillRect(35, 325, 30, 30);

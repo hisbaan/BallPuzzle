@@ -833,6 +833,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         if (e.getSource() == levelEditorSaveButton) {
             int sCounter = 0;
             int fCounter = 0;
+            int t1Counter = 0;
+            int t2Counter = 0;
 
             for (int y = 0; y < 20; y++) {
                 for (int x = 0; x < 20; x++) {
@@ -840,11 +842,15 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                         sCounter++;
                     } else if (level[x][y] == 'f') {
                         fCounter++;
+                    } else if (level[x][y] == 't') { //suggested by emily making a level with 50 of each block
+                        t1Counter++;
+                    } else if (level[x][y] == 'T') { //same here
+                        t2Counter++;
                     }
                 }
             }
 
-            if (sCounter == 1 && fCounter > 0) {
+            if (sCounter == 1 && fCounter > 0 && !(t1Counter > 1 || t2Counter > 1 || (t1Counter == 1 && t2Counter < 1) || (t2Counter == 1 && t2Counter < 1))) {
                 File file;
 
                 if (editingNewLevel) {
@@ -902,6 +908,18 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 }
                 if (fCounter < 1) {
                     message += "\nNo finish block";
+                }
+                if (t1Counter > 1) {
+                    message += "\nToo many orange teleport blocks";
+                }
+                if (t2Counter > 1) {
+                    message += "\nToo many blue teleport blocks";
+                }
+                if (t1Counter == 1 && t2Counter < 1) {
+                    message += "\nOne orange teleport block but no blue teleport block";
+                }
+                if (t2Counter == 1 && t1Counter < 1) {
+                    message += "\nOne blue teleport block but no orange teleport block";
                 }
 
                 JOptionPane.showMessageDialog(levelEditorFrame, "Level Not Saved:" + message);

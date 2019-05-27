@@ -1,0 +1,58 @@
+level 1:
+d
+
+level 2:
+a
+
+level 3:
+d
+
+level 4:
+daswadwsd
+
+level 5:
+dsawdsa
+
+level 6:
+wdsawas
+
+level 7:
+dasawdaswd
+
+level 8:
+wdsawdwasawdaw
+
+level 9:
+wasdawasdsdsas
+
+level 10:
+dwasdwdsasdwdwa
+
+level 11:
+wasdsawasdwasdsdsawdsasdwasd
+
+level 12:
+wdwawdsawasdsawasawasawasawasawds
+
+level 13:
+asdsawasdsawasawdasdsa
+
+level 14:
+awdsawdsadwasd
+
+level 15:
+wasawdsawasawawdsdsd
+
+level 16:
+wawasawawa
+
+level 17:
+wawawdw
+
+level 18:
+
+
+level 19:
+
+level 20:
+

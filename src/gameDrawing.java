@@ -7,7 +7,8 @@ class gameDrawing extends Canvas {
 
     Color darkGreen = new Color(0x006400);
     Color darkBlue = new Color(0x005994);
-    Color darkOrange = new Color(0xCD3E0E);
+    Color portalOrange = new Color(0xED6900);
+    Color portalBlue = new Color(0x1C5DFF);
     Color purple = new Color(0xA100F7);
 
     public boolean currentlyDarkGreen = false;
@@ -77,15 +78,15 @@ class gameDrawing extends Canvas {
                     g.fillRect((x * 40) + 15, (y * 40) + 15, 10, 10);
                 }
 
-                if (BallPuzzle.level[x][y] == 't' || BallPuzzle.level[x][y] == 'T') {
-                    g.setColor(darkOrange);
+                if (BallPuzzle.level[x][y] == 't') {
+                    g.setColor(portalOrange);
                     g.fillRect(x * 40, y * 40, 40, 40);
                     g.setColor(Color.white);
                     g.fillRect((x * 40) + 5, (y * 40) + 5, 30, 30);
                 }
 
                 if (BallPuzzle.level[x][y] == 'T') {
-                    g.setColor(Color.orange);
+                    g.setColor(portalBlue);
                     g.fillRect(x * 40, y * 40, 40, 40);
                     g.setColor(Color.white);
                     g.fillRect((x * 40) + 5, (y * 40) + 5, 30, 30);
