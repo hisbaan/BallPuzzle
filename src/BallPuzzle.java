@@ -966,6 +966,16 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getSource() == gameFrame || e.getSource() == customLevelFrame) {
+            if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+                restartLevel();
+                if (DEBUG) System.out.println();
+            }
+            if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                movement.stop();
+                mainMenu();
+                if (DEBUG) System.out.println();
+            }
+
             if (direction.equals("")) {
                 if (e.getKeyCode() == KeyEvent.VK_UP) {
                     direction = "north";
