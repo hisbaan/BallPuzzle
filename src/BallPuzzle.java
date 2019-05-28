@@ -264,6 +264,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     }
 
     public void levelEditor() {
+        canvas.validate();
+        canvas.repaint();
+
         if (DEBUG) System.out.println("levelEditor ran");
         levelEditorFrame.setSize(900, 850);
         levelEditorFrame.setResizable(false);
@@ -535,8 +538,24 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     //Loads in the next level when the method is called.
     public void nextLevel() {
-        if (levelNumber > 0)
-            JOptionPane.showMessageDialog(gameFrame, "Level " + levelNumber + " complete!\nPress okay to advance:");
+        boolean restarting = false;
+
+        if (levelNumber > 0) {
+            String[] options = {"Next Level", "Replay"};
+            int decision = JOptionPane.showOptionDialog(gameFrame, "Level " + levelNumber + " complete!\n What would you like to do?", "", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+
+            if (decision == 1) {
+                JOptionPane.showMessageDialog(gameFrame, "Level " + levelNumber + " restarted.");
+                levelNumber--;
+            } else if (decision == 0) {
+            }
+        }
+
+        if (levelNumber == 21) {
+            win();
+        }
+
         levelNumber++;
 
         levelButton.setText("Level: " + levelNumber);
@@ -749,6 +768,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 }
             }
         }
+    }
+
+    public void win() {
+        //TODO code for win here --> Make a display where an animation is painted on the grid and then a JOptionPane is shown asking the user if they want to ~maybe~ play bonus levels or return to the main menu
     }
 
     //ActionListener method
@@ -965,7 +988,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getSource() == gameFrame || e.getSource() == customLevelFrame) {
+        if ((e.getSource() == gameFrame || e.getSource() == customLevelFrame) && (gameFrame.isVisible() || customLevelFrame.isVisible())) {
             if (e.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
                 restartLevel();
                 if (DEBUG) System.out.println();
