@@ -12,11 +12,12 @@ public class WinDrawing extends JPanel {
 
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         counter++;
 
-        if (counter > 6) counter = 0;
+//        if (counter > 6) counter = 0;
+
 
         g2d.setColor(Color.cyan);
         g2d.fillRect(0, 0, 800, 800);
@@ -24,10 +25,17 @@ public class WinDrawing extends JPanel {
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
 
+                //TODO fix bug where white grid does not display properly.
+
+                g2d.setColor(Color.white);
+                g2d.drawLine(x * 40, 0, x * 40, 800);
+                g2d.drawLine(0, y * 40, 800, y * 40);
                 //Drawing Y
                 g2d.setColor(darkred);
 
-                if (counter == 1) g2d.setColor(Color.red);
+//                if (counter == 1) g2d.setColor(Color.red);
+
+                if (counter % 2 == 0) g2d.setColor(Color.cyan);
 
                 g2d.fillRect(80, 80, 40, 40);
                 g2d.fillRect(80, 120, 40, 40);
@@ -42,7 +50,9 @@ public class WinDrawing extends JPanel {
                 //Drawing O
                 g2d.setColor(darkred);
 
-                if (counter == 2) g2d.setColor(Color.red);
+//                if (counter == 2) g2d.setColor(Color.red);
+
+                if (counter % 2 == 0) g2d.setColor(Color.cyan);
 
                 g2d.fillRect(320, 120, 40, 40);
                 g2d.fillRect(320, 160, 40, 40);
@@ -60,7 +70,9 @@ public class WinDrawing extends JPanel {
                 //Drawing U
                 g2d.setColor(darkred);
 
-                if (counter == 3) g2d.setColor(Color.red);
+//                if (counter == 3) g2d.setColor(Color.red);
+
+                if (counter % 2 == 0) g2d.setColor(Color.cyan);
 
                 g2d.fillRect(520, 80, 40, 40);
                 g2d.fillRect(520, 120, 40, 40);
@@ -79,7 +91,9 @@ public class WinDrawing extends JPanel {
 
                 g2d.setColor(darkred);
 
-                if (counter == 4) g2d.setColor(Color.red);
+//                if (counter == 4) g2d.setColor(Color.red);
+
+                if (counter % 2 == 0) g2d.setColor(Color.cyan);
 
                 g2d.fillRect(80, 480, 40, 40);
                 g2d.fillRect(80, 520, 40, 40);
@@ -101,7 +115,9 @@ public class WinDrawing extends JPanel {
 
                 g2d.setColor(darkred);
 
-                if (counter == 5) g2d.setColor(Color.red);
+//                if (counter == 5) g2d.setColor(Color.red);
+
+                if (counter % 2 == 0) g2d.setColor(Color.cyan);
 
                 g2d.fillRect(320, 480, 40, 40);
                 g2d.fillRect(320, 680, 40, 40);
@@ -117,7 +133,9 @@ public class WinDrawing extends JPanel {
                 //Drawing N
                 g2d.setColor(darkred);
 
-                if (counter == 6) g2d.setColor(Color.red);
+//                if (counter == 6) g2d.setColor(Color.red);
+
+                if (counter % 2 == 0) g2d.setColor(Color.cyan);
 
                 g2d.fillRect(480, 480, 40, 40);
                 g2d.fillRect(480, 520, 40, 40);
