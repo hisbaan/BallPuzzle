@@ -28,9 +28,11 @@ class gameDrawing extends Canvas {
 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
+                //Draws the white grid in the
                 g.setColor(Color.white);
                 g.drawLine(x * 40, 0, x * 40, 800);
                 g.drawLine(0, y * 40, 800, y * 40);
+
                 //Draws blue blocks wherever there is a solid block.
                 if (BallPuzzle.level[x][y] == 'x') {
                     g.setColor(darkBlue);

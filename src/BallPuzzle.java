@@ -78,6 +78,16 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     gameDrawing canvas = new gameDrawing(); //Instance of class to call paint method
     levelEditorDrawing levelEditorDrawing = new levelEditorDrawing();
 
+    //Variables for win screen.
+    JFrame winningFrame = new JFrame();
+    WinDrawing winDrawing = new WinDrawing();
+
+    Timer winTimer;
+
+    JPanel winningBottomPannel = new JPanel();
+
+    JButton winningBackButton = new JButton("Main Menu");
+
     //Custom Cursors
     Toolkit toolkit = Toolkit.getDefaultToolkit();
     Image image0 = toolkit.getImage("./mouseIcons/0.ico");
@@ -229,6 +239,11 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             }
             timer.setText(gameTimerMinutesString + ":" + gameTimerSecondsString);
         });
+
+        winTimer = new Timer(1000, e -> {
+            winDrawing.validate();
+            winDrawing.repaint();
+        });
     }
 
     public void mainMenu() {
@@ -258,6 +273,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         gameFrame.setVisible(false);
         levelEditorFrame.setVisible(false);
         customLevelFrame.setVisible(false);
+        winningFrame.setVisible(false);
 
 
         gameTimer = 0;
@@ -302,6 +318,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         mainFrame.setVisible(false);
         gameFrame.setVisible(false);
         customLevelFrame.setVisible(false);
+        winningFrame.setVisible(false);
 
         movement.start();
     }
@@ -364,6 +381,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         mainFrame.setVisible(false);
         levelEditorFrame.setVisible(false);
         customLevelFrame.setVisible(false);
+        winningFrame.setVisible(false);
     }
 
     public void getCustomLevels() {
@@ -510,6 +528,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         mainFrame.setVisible(false);
         levelEditorFrame.setVisible(false);
         customLevelFrame.setVisible(true);
+        winningFrame.setVisible(false);
     }
 
     public void restartLevel() {
@@ -538,11 +557,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     //Loads in the next level when the method is called.
     public void nextLevel() {
-        boolean restarting = false;
 
         if (levelNumber > 0) {
             String[] options = {"Next Level", "Replay"};
-            int decision = JOptionPane.showOptionDialog(gameFrame, "Level " + levelNumber + " complete!\n What would you like to do?", "", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+            int decision = JOptionPane.showOptionDialog(gameFrame, "Level " + levelNumber + " complete!\nWhat would you like to do?", "", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
 
             if (decision == 1) {
@@ -552,7 +570,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             }
         }
 
-        if (levelNumber == 21) {
+        if (levelNumber > 19) {
+            System.out.println("Game Win Triggered");
             win();
         }
 
@@ -772,6 +791,30 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
     public void win() {
         //TODO code for win here --> Make a display where an animation is painted on the grid and then a JOptionPane is shown asking the user if they want to ~maybe~ play bonus levels or return to the main menu
+        movement.stop();
+        gameTime.stop();
+        winTimer.start();
+
+
+        winningFrame.setSize(800, 850);
+        winningFrame.setLayout(new BorderLayout());
+        winningFrame.setResizable(false);
+        winningFrame.add(winDrawing, BorderLayout.CENTER);
+
+        winDrawing.setSize(800, 800);
+
+        winningBottomPannel.setLayout(new GridLayout(1, 2));
+        winningBottomPannel.setSize(800, 50);
+        winningFrame.add(winningBottomPannel, BorderLayout.SOUTH);
+
+        winningBottomPannel.add(winningBackButton);
+        if (winningBackButton.getActionListeners().length < 1) winningBackButton.addActionListener(this);
+
+        if (winningFrame.getWindowListeners().length < 1) winningFrame.addWindowListener(this);
+        winningFrame.setVisible(true);
+        gameFrame.setVisible(false);
+        customLevelFrame.setVisible(false);
+        mainFrame.setVisible(false);
     }
 
     //ActionListener method
@@ -784,13 +827,12 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         if (e.getSource() == levelEditorButton) {
             String[] options = new String[]{"New Level", "Pre-existing Level"};
-            int response = JOptionPane.showOptionDialog(mainFrame, "Message", "Title",
-                    JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
-                    null, options, options[0]);
+            int response = JOptionPane.showOptionDialog(mainFrame, "New or Pre-existing Level", "", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
 
             if (response == 0) {
                 newLevel = JOptionPane.showInputDialog(mainFrame, "What would you like to call your level?");
                 editingNewLevel = true;
+
 
                 reset();
             } else if (response == 1) {
@@ -954,7 +996,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             playCustomLevels();
         }
 
-        if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton) {
+        if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton || e.getSource() == winningBackButton) {
             movement.stop();
             mainMenu();
         }
@@ -1133,8 +1175,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             JOptionPane.showMessageDialog(gameFrame, "Thank you for playing!\nGood Bye!");
         if (e.getSource() == levelEditorFrame)
             JOptionPane.showMessageDialog(levelEditorFrame, "Thank you for playing!\nGood Bye!");
-//        if (e.getSource() == highScoreFrame)
-//            JOptionPane.showMessageDialog(highScoreFrame, "Thank you for playing!\nGood Bye!");
+        if (e.getSource() == winningFrame)
+            JOptionPane.showMessageDialog(winningFrame, "Thank you for playing!\nGood Bye!");
 
         System.exit(0);
     }
