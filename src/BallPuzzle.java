@@ -14,6 +14,8 @@ import java.util.Arrays;
 import javax.swing.*;
 import java.awt.Cursor;
 
+import javax.swing.JComponent.*;
+
 public class BallPuzzle implements ActionListener, WindowListener, KeyListener, MouseListener {
     public static void main(String[] args) {
         new BallPuzzle();
@@ -821,7 +823,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startGame) {
-            levelNumber = 0;
+            levelNumber = 19;
             gameStart();
         }
 
