@@ -70,53 +70,66 @@ public class WinDrawing extends JPanel {
 
         //Drawing W
 
+        g2d.fillRect(80, 360, 40, 40);
+        g2d.fillRect(80, 400, 40, 40);
+        g2d.fillRect(80, 440, 40, 40);
         g2d.fillRect(80, 480, 40, 40);
         g2d.fillRect(80, 520, 40, 40);
         g2d.fillRect(80, 560, 40, 40);
-        g2d.fillRect(80, 600, 40, 40);
-        g2d.fillRect(80, 640, 40, 40);
-        g2d.fillRect(80, 680, 40, 40);
-        g2d.fillRect(120, 640, 40, 40);
-        g2d.fillRect(160, 600, 40, 40);
-        g2d.fillRect(200, 640, 40, 40);
+        g2d.fillRect(120, 520, 40, 40);
+        g2d.fillRect(160, 480, 40, 40);
+        g2d.fillRect(200, 520, 40, 40);
+        g2d.fillRect(240, 360, 40, 40);
+        g2d.fillRect(240, 400, 40, 40);
+        g2d.fillRect(240, 440, 40, 40);
         g2d.fillRect(240, 480, 40, 40);
         g2d.fillRect(240, 520, 40, 40);
         g2d.fillRect(240, 560, 40, 40);
-        g2d.fillRect(240, 600, 40, 40);
-        g2d.fillRect(240, 640, 40, 40);
-        g2d.fillRect(240, 680, 40, 40);
 
         //Drawing I
 
-        g2d.fillRect(320, 480, 40, 40);
-        g2d.fillRect(320, 680, 40, 40);
+        g2d.fillRect(320, 360, 40, 40);
+        g2d.fillRect(320, 560, 40, 40);
+        g2d.fillRect(360, 360, 40, 40);
+        g2d.fillRect(360, 400, 40, 40);
+        g2d.fillRect(360, 440, 40, 40);
         g2d.fillRect(360, 480, 40, 40);
         g2d.fillRect(360, 520, 40, 40);
         g2d.fillRect(360, 560, 40, 40);
-        g2d.fillRect(360, 600, 40, 40);
-        g2d.fillRect(360, 640, 40, 40);
-        g2d.fillRect(360, 680, 40, 40);
-        g2d.fillRect(400, 480, 40, 40);
-        g2d.fillRect(400, 680, 40, 40);
+        g2d.fillRect(400, 360, 40, 40);
+        g2d.fillRect(400, 560, 40, 40);
 
         //Drawing N
 
+        g2d.fillRect(480, 360, 40, 40);
+        g2d.fillRect(480, 400, 40, 40);
+        g2d.fillRect(480, 440, 40, 40);
         g2d.fillRect(480, 480, 40, 40);
         g2d.fillRect(480, 520, 40, 40);
         g2d.fillRect(480, 560, 40, 40);
-        g2d.fillRect(480, 600, 40, 40);
-        g2d.fillRect(480, 640, 40, 40);
-        g2d.fillRect(480, 680, 40, 40);
-        g2d.fillRect(520, 520, 40, 40);
-        g2d.fillRect(560, 560, 40, 40);
-        g2d.fillRect(560, 600, 40, 40);
-        g2d.fillRect(600, 640, 40, 40);
+        g2d.fillRect(520, 400, 40, 40);
+        g2d.fillRect(560, 440, 40, 40);
+        g2d.fillRect(560, 480, 40, 40);
+        g2d.fillRect(600, 520, 40, 40);
+        g2d.fillRect(640, 360, 40, 40);
+        g2d.fillRect(640, 400, 40, 40);
+        g2d.fillRect(640, 440, 40, 40);
         g2d.fillRect(640, 480, 40, 40);
         g2d.fillRect(640, 520, 40, 40);
         g2d.fillRect(640, 560, 40, 40);
-        g2d.fillRect(640, 600, 40, 40);
-        g2d.fillRect(640, 640, 40, 40);
-        g2d.fillRect(640, 680, 40, 40);
+
+        //Drawing !
+
+        g2d.fillRect(720, 360, 40, 40);
+        g2d.fillRect(720, 400, 40, 40);
+        g2d.fillRect(720, 440, 40, 40);
+        g2d.fillRect(720, 480, 40, 40);
+        g2d.fillRect(720, 560, 40, 40);
+
+        String time = "Time: " + BallPuzzle.gameTimerMinutesString + ":" + BallPuzzle.gameTimerSecondsString;
+        g2d.setFont(new Font("Courier New", Font.BOLD, 80));
+        g2d.drawString(time, 150, 700);
+
 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
