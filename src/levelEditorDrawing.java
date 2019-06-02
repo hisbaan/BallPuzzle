@@ -2,7 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 //Paint class that draws the 'brush' selection area of the level editor.
-class levelEditorDrawing extends JPanel {
+class levelEditorDrawing extends Canvas {
 
     Color darkGreen = new Color(0x006400);
     Color darkBlue = new Color(0x005994);

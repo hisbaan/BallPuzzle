@@ -62,12 +62,12 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     Timer movement; //Initializing timer that is mentioned in constructor.
 
     Timer gameTime;
-    public int gameTimer = 0;
-    public int gameTimerMinutes;
-    public int gameTimerSeconds;
+    public int gameTimer = 0; //Game timer in seconds.
+    public int gameTimerMinutes; //Integer that tracks the game time in minutes from 0-99.
+    public int gameTimerSeconds; //Integer that tracks the remaining secondds from 0-60.
 
-    public static String gameTimerMinutesString;
-    public static String gameTimerSecondsString;
+    public static String gameTimerMinutesString; //String that gets the game time in minutes.
+    public static String gameTimerSecondsString; //String that gets the remaining game time in sconds.
 
     public int levelNumber = 0;
     public static char[][] level = new char[20][20]; //Char array that tracks the blocks on the level.
