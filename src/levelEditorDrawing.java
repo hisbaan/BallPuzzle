@@ -1,4 +1,3 @@
-import javax.swing.*;
 import java.awt.*;
 
 //Paint class that draws the 'brush' selection area of the level editor.

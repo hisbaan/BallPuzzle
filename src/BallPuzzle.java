@@ -15,6 +15,12 @@ import javax.swing.*;
 import java.awt.Cursor;
 
 import javax.swing.JComponent.*;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 
 public class BallPuzzle implements ActionListener, WindowListener, KeyListener, MouseListener {
     public static void main(String[] args) {
@@ -31,6 +37,12 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     JButton startGame = new JButton("Start Game");
     JButton levelEditorButton = new JButton("Level Editor");
     JButton playCustomLevelButton = new JButton("Play Custom Levels");
+    JButton instructionsButton = new JButton("Instructions");
+
+    //Variables for instructions menu
+    JFrame instructionsFrame = new JFrame("Instructions");
+    JTextPane instructionsText = new JTextPane();
+    JButton instructionsBackButton = new JButton("Back to Main Menu");
 
     //Variables for level editor
     JFrame levelEditorFrame = new JFrame("Level Editor");
@@ -271,14 +283,57 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         mainPanel.add(playCustomLevelButton);
         if (playCustomLevelButton.getActionListeners().length < 1) playCustomLevelButton.addActionListener(this);
 
+        mainPanel.add(instructionsButton);
+        if (instructionsButton.getActionListeners().length < 1) instructionsButton.addActionListener(this);
+
         mainFrame.setVisible(true);
         gameFrame.setVisible(false);
         levelEditorFrame.setVisible(false);
         customLevelFrame.setVisible(false);
         winningFrame.setVisible(false);
+        instructionsFrame.setVisible(false);
 
 
         gameTimer = 0;
+    }
+
+    public void instructions() {
+
+
+        File instructionsFile = new File("./Instruction Manual/InstructionManual.html");
+
+        instructionsFrame.setSize(800,800);
+        instructionsFrame.setResizable(false);
+        instructionsFrame.setLayout(new BorderLayout());
+
+        if(instructionsFrame.getWindowListeners().length < 1) instructionsFrame.addWindowListener(this);
+
+        try {
+            Desktop.getDesktop().browse(instructionsFile.toURI());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        StyledDocument doc = instructionsText.getStyledDocument();
+        SimpleAttributeSet center = new SimpleAttributeSet();
+        StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
+        doc.setParagraphAttributes(0, doc.getLength(), center, false);
+
+        instructionsText.setFont(new Font("Courier New", Font.PLAIN, 48));
+        instructionsText.setEditable(false);
+        instructionsText.setText("\n\n\n\n\n\n\nBrowser opened to display instructions");
+
+        instructionsFrame.add(instructionsText, BorderLayout.CENTER);
+
+        instructionsFrame.add(instructionsBackButton, BorderLayout.SOUTH);
+        if (instructionsBackButton.getActionListeners().length < 1) instructionsBackButton.addActionListener(this);
+
+        instructionsFrame.setVisible(true);
+        mainFrame.setVisible(false);
+        gameFrame.setVisible(false);
+        winningFrame.setVisible(false);
+        customLevelFrame.setVisible(false);
+        levelEditorFrame.setVisible(false);
     }
 
     public void levelEditor() {
@@ -321,6 +376,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         gameFrame.setVisible(false);
         customLevelFrame.setVisible(false);
         winningFrame.setVisible(false);
+        instructionsFrame.setVisible(false);
 
         movement.start();
     }
@@ -384,6 +440,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         levelEditorFrame.setVisible(false);
         customLevelFrame.setVisible(false);
         winningFrame.setVisible(false);
+        instructionsFrame.setVisible(false);
     }
 
     public void getCustomLevels() {
@@ -531,6 +588,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         levelEditorFrame.setVisible(false);
         customLevelFrame.setVisible(true);
         winningFrame.setVisible(false);
+        instructionsFrame.setVisible(false);
     }
 
     public void restartLevel() {
@@ -897,6 +955,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             reset();
         }
 
+        if (e.getSource() == instructionsButton) {
+            instructions();
+        }
+
         if (e.getSource() == levelEditorSaveButton) {
             int sCounter = 0;
             int fCounter = 0;
@@ -998,7 +1060,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             playCustomLevels();
         }
 
-        if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton || e.getSource() == winningBackButton) {
+        if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton || e.getSource() == winningBackButton || e.getSource() == instructionsBackButton) {
             movement.stop();
             mainMenu();
         }
@@ -1179,6 +1241,8 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
             JOptionPane.showMessageDialog(levelEditorFrame, "Thank you for playing!\nGood Bye!");
         if (e.getSource() == winningFrame)
             JOptionPane.showMessageDialog(winningFrame, "Thank you for playing!\nGood Bye!");
+        if (e.getSource() == instructionsFrame)
+            JOptionPane.showMessageDialog(instructionsFrame, "Thank you for playing!\nGood Bye!");
 
         System.exit(0);
     }
