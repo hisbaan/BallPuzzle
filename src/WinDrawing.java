@@ -12,7 +12,6 @@ public class WinDrawing extends JPanel {
 
     public void paint(Graphics g) {
         Graphics2D g2d = (Graphics2D) g;
-//        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
         counter++;
 
@@ -141,9 +140,6 @@ public class WinDrawing extends JPanel {
                 g2d.drawLine(0, y * 40, 800, y * 40);
                 //Drawing Y
                 g2d.setColor(darkRed);
-
-//                if (counter == 1) g2d.setColor(Color.red);
-
 
                 //Drawing white grid
                 g2d.setColor(Color.white);

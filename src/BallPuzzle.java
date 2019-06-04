@@ -302,11 +302,11 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         File instructionsFile = new File("./Instruction Manual/InstructionManual.html");
 
-        instructionsFrame.setSize(800,800);
+        instructionsFrame.setSize(800, 800);
         instructionsFrame.setResizable(false);
         instructionsFrame.setLayout(new BorderLayout());
 
-        if(instructionsFrame.getWindowListeners().length < 1) instructionsFrame.addWindowListener(this);
+        if (instructionsFrame.getWindowListeners().length < 1) instructionsFrame.addWindowListener(this);
 
         try {
             Desktop.getDesktop().browse(instructionsFile.toURI());
@@ -473,7 +473,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 }
                 existingLevelName = (String) JOptionPane.showInputDialog(temp, "Select which level you want to play:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[0]);
             } catch (HeadlessException exc) {
-                existingLevelName = "";
+                existingLevelName = null;
             }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -486,21 +486,23 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
         File levelFile = new File("./customLevels/" + existingLevelName + ".txt");
         String levelTemp;
 
-        try {
-            levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
-            int z = 0;
+        if (existingLevelName != null) {
+            try {
+                levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
+                int z = 0;
 
-            for (int y = 0; y < 20; y++) {
-                for (int x = 0; x < 20; x++) {
-                    level[x][y] = levelTemp.charAt(z);
-                    z++;
+                for (int y = 0; y < 20; y++) {
+                    for (int x = 0; x < 20; x++) {
+                        level[x][y] = levelTemp.charAt(z);
+                        z++;
+                    }
                 }
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
 
-        loadCustomLevels();
+            loadCustomLevels();
+        }
     }
 
     public void loadCustomLevels() {
@@ -919,8 +921,9 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
                     try {
                         existingLevelName = (String) JOptionPane.showInputDialog(mainFrame, "Select which level you want to play:", "", JOptionPane.QUESTION_MESSAGE, null, listOfFiles, listOfFiles[0]);
+                        System.out.println(existingLevelName);
                     } catch (HeadlessException exc) {
-                        existingLevelName = "";
+                        existingLevelName = null;
                     }
                 } catch (Exception ex) {
                     ex.printStackTrace();
@@ -933,22 +936,25 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
                 File levelFile = new File("./customLevels/" + existingLevelName + ".txt");
                 String levelTemp;
 
-                try {
-                    levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
-                    int z = 0;
+                if (existingLevelName != null) {
 
-                    for (int y = 0; y < 20; y++) {
-                        for (int x = 0; x < 20; x++) {
-                            level[x][y] = levelTemp.charAt(z);
-                            z++;
+                    try {
+                        levelTemp = new String(Files.readAllBytes(levelFile.toPath()), StandardCharsets.UTF_8);
+                        int z = 0;
+
+                        for (int y = 0; y < 20; y++) {
+                            for (int x = 0; x < 20; x++) {
+                                level[x][y] = levelTemp.charAt(z);
+                                z++;
+                            }
                         }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+
+                    levelEditor();
                 }
             }
-
-            levelEditor();
         }
 
         if (e.getSource() == levelEditorResetButton) {
@@ -1057,7 +1063,10 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
 
         if (e.getSource() == playCustomLevelButton) {
             getCustomLevels();
-            playCustomLevels();
+
+            if (existingLevelName != null) {
+                playCustomLevels();
+            }
         }
 
         if (e.getSource() == gameBackButton || e.getSource() == levelEditorBackButton || e.getSource() == winningBackButton || e.getSource() == instructionsBackButton) {
