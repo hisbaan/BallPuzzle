@@ -125,27 +125,26 @@ public class WinDrawing extends JPanel {
         g2d.fillRect(720, 480, 40, 40);
         g2d.fillRect(720, 560, 40, 40);
 
-        String time = "Time: " + BallPuzzle.gameTimerMinutesString + ":" + BallPuzzle.gameTimerSecondsString;
-        g2d.setFont(new Font("Courier New", Font.BOLD, 80));
-        g2d.drawString(time, 150, 700);
-
 
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
-
-                //TODO fix bug where white grid does not display properly.
-
-                g2d.setColor(Color.white);
-                g2d.drawLine(x * 40, 0, x * 40, 800);
-                g2d.drawLine(0, y * 40, 800, y * 40);
-                //Drawing Y
-                g2d.setColor(darkRed);
-
                 //Drawing white grid
                 g2d.setColor(Color.white);
                 g2d.drawLine(x * 40, 0, x * 40, 800);
                 g2d.drawLine(0, y * 40, 800, y * 40);
             }
         }
+
+        //Drawing time
+        String time = "Time: " + BallPuzzle.gameTimerMinutesString + ":" + BallPuzzle.gameTimerSecondsString;
+
+        if (counter % 2 == 0) {
+            g2d.setColor(Color.cyan);
+        } else {
+            g2d.setColor(darkRed);
+        }
+        
+        g2d.setFont(new Font("Courier New", Font.BOLD, 80));
+        g2d.drawString(time, 150, 700);
     }
 }
