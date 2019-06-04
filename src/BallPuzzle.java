@@ -1,9 +1,7 @@
 //File: BallPuzzle.java
 //Created: 23/04/2019
-//Finished: 23/04/2019
+//Finished: 03/06/2019
 //Name: Hisbaan Noorani
-//
-//This program
 
 import java.awt.*;
 import java.awt.event.*;
