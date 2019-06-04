@@ -883,7 +883,7 @@ public class BallPuzzle implements ActionListener, WindowListener, KeyListener, 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == startGame) {
-            levelNumber = 19;
+            levelNumber = 0;
             gameStart();
         }
 

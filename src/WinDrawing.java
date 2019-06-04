@@ -143,7 +143,7 @@ public class WinDrawing extends JPanel {
         } else {
             g2d.setColor(darkRed);
         }
-        
+
         g2d.setFont(new Font("Courier New", Font.BOLD, 80));
         g2d.drawString(time, 150, 700);
     }
